@@ -7,9 +7,9 @@
 
 import React, { useContext, } from "react"
 //== React router dom 
-import { useHistory } from "react-router-dom"
+import { useHistory, } from "react-router-dom"
 // == AuthContext 
-import { AuthContext } from '../../utils/contexts/authenticationContext'
+import { AuthContext, } from '../../utils/contexts/authenticationContext'
 import { APP_CONTEXT, } from '../../utils/reducers/authenticationReducer'
 
 export default function Header() {
@@ -28,7 +28,7 @@ export default function Header() {
 
 		history.push('/signin')
 	}
-
+	
 	return(
 		<nav className="navbar" role="navigation" aria-label="main navigation">
 			<div className="navbar-brand">

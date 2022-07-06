@@ -8,7 +8,7 @@ import React from "react"
 import ErrorOccured from "./errorOccured"
 
 // Api header depending of the env variable 
-const ApiHeader =  process.env.RUN_PRODUCTION_SERVER === 'true' ? process.env.API_HEADER_PRODUCTION : process.env.API_HEADER_DEVELOPMENT 
+const ApiHeader =  process.env.RUN_PRODUCTION_SERVER == 'true' ? process.env.API_HEADER_PRODUCTION : process.env.API_HEADER_DEVELOPMENT 
 
 
 let ToolBoxSdk = {
@@ -57,7 +57,7 @@ class CoreSDK {
 			accepts: 'application/json',
 			Accept: 'application/json',
 			'Content-Type': 'application/json',
-			// 'Access-Control-Allow-Credentials': "true"
+			//'Access-Control-Allow-Credentials': 'true'
 			// 'mode': 'no-cors'
 		}
 
@@ -258,6 +258,19 @@ class API extends CoreSDK {
 				body: JSON.stringify({
 					filter,
 				}),
+			}})
+	}
+
+
+	/**
+	 * @summary Refresh a token that has expired
+	*/
+	refreshToken() {
+		return this.apiCall(`${ApiHeader}/api/auth/refreshToken`, {
+			params: {
+				method: 'GET',
+				credentials: 'include',
+				headers: this.headers(),
 			}})
 	}
 

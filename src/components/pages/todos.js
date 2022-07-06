@@ -22,6 +22,10 @@ const FILTER_STATE = {
 	todo: 2,
 }
 
+const TOKEN_STATE = {
+	expiredToken: "Unauthorized! Access Token was expired!"
+}
+
 export default function Todos() {
 
 	const history = useHistory()
@@ -48,16 +52,44 @@ export default function Todos() {
 	async function handleSubmit(event) {
 		event.preventDefault()
 
-		let response = await ToolBoxSdk.api.postTask(todos.item,email, false)
+		const postTodo = await ToolBoxSdk.api.postTask(todos.item,email, false)
+		
+		let getAllTasks
 
-		// if(response.responseStatusCode !== 200){
-		// 	history.push('/signin')
-		// }	
+		if(postTodo.responseStatusCode !== 200 
+		&& postTodo.message === TOKEN_STATE.expiredToken) {
 
-		response = await ToolBoxSdk.api.getAllTasks(email)
+			// use refreshToken to get new accessToken
+			const shouldSignIn = await ToolBoxSdk.api.refreshToken()	
 
+			// force sign in
+			if( shouldSignIn.responseStatusCode !== 200 
+	
+			||( postTodo.responseStatusCode !== 200 
+			&& !postTodo.message === TOKEN_STATE.expiredToken)) {
+				dispatch({
+					type: APP_CONTEXT.setSignedIn,
+					isAuthenticated: false,
+					email: email
+				})
+
+				history.push('/signin')
+
+				return
+			}
+			else {
+
+				// retry to get all tasks
+				getAllTasks = await ToolBoxSdk.api.getAllTasks(email)
+				
+			}
+		}
+
+
+		getAllTasks = await ToolBoxSdk.api.getAllTasks(email)
+		
 		const todosItems = []
-		const updatedItems = response.json
+		const updatedItems = getAllTasks.json
 
 		for (const record of updatedItems) {
 
@@ -139,7 +171,41 @@ export default function Todos() {
 	const handleEdit = async (id, task, achievement) => {
 
 		if(editItems[id]) {
-			await ToolBoxSdk.api.updateTask(id, editItems[id], achievement)
+			let updateTask = await ToolBoxSdk.api.updateTask(id, editItems[id], achievement)
+
+		// access token expired
+		if(updateTask.responseStatusCode !== 200
+			&& updateTask.message === TOKEN_STATE.expiredToken) {
+
+				// use refreshToken to get new accessToken
+				const shouldSignIn = await ToolBoxSdk.api.refreshToken()	
+
+				// force sign in
+				if( shouldSignIn.responseStatusCode !== 200 
+
+				||( shouldSignIn.responseStatusCode !== 200 
+				&& !shouldSignIn.message === TOKEN_STATE.expiredToken)) {
+					dispatch({
+						type: APP_CONTEXT.setSignedIn,
+						isAuthenticated: false,
+						email: email
+					})
+
+					history.push('/signin')
+
+					return
+				}
+
+
+				else {
+
+					// retry to update task
+					updateTask = await ToolBoxSdk.api.updateTask(id, editItems[id], achievement)
+					
+				}
+			}	
+
+
 			let _editItems = {
 				...editItems,
 			}
@@ -176,19 +242,46 @@ export default function Todos() {
 
 	useEffect(async() => {
 
-		const response = await ToolBoxSdk.api.getAllTasks(email)
+		// get all the tasks
+		let allTasks = await ToolBoxSdk.api.getAllTasks(email)
 
-		// if(response.responseStatusCode !== 200){
-		// 	history.push('/signin')
-		// }	
+		// access token expired
+		if(allTasks.responseStatusCode !== 200
+		&& allTasks.message === TOKEN_STATE.expiredToken) {
+
+			// use refreshToken to get new accessToken
+			const shouldSignIn = await ToolBoxSdk.api.refreshToken()	
+
+			// force sign in
+			if( shouldSignIn.responseStatusCode !== 200 
+	
+			||( shouldSignIn.responseStatusCode !== 200 
+			&& !shouldSignIn.message === TOKEN_STATE.expiredToken)) {
+				dispatch({
+					type: APP_CONTEXT.setSignedIn,
+					isAuthenticated: false,
+					email: email
+				})
+
+				history.push('/signin')
+
+				return
+			}
+
+
+			else {
+
+				// retry to get all tasks
+				allTasks = await ToolBoxSdk.api.getAllTasks(email)
+				
+			}
+		}	
+
 
 		const todosItems = todos.items
-		const recordedTodos = response.json
+		const recordedTodos = allTasks.json
 		
 
-		console.log(recordedTodos)
-
-		
 		for (const record of recordedTodos) {
 
 			todosItems.push({
@@ -204,8 +297,10 @@ export default function Todos() {
 
 	},[])
 
+
+
 	return <>
-		<h3 className="title has-text-centered is-4">Todo input</h3>
+		<h3 className="title has-text-centered is-4">TODO input</h3>
 		<form className="box" onSubmit={handleSubmit}>
 			<div className="field">
 				<div className="control">
@@ -225,20 +320,26 @@ export default function Todos() {
 		{  todos?.items 
 		&& todos.items.length > 0 
 		&&	<>
-		<h3 className="title has-text-centered is-4">Todo list</h3>
+		<h3 className="title has-text-centered is-4">TODO list</h3>
 		<div className="columns">
 			<div className="column">
-				<button className="button is-link is-fullwidth" onClick={() => todosToShow(FILTER_STATE.all)}>
+				<button 
+					className="button is-link is-fullwidth" 
+					onClick={() => todosToShow(FILTER_STATE.all)}>
 					<span>All</span>
 				</button>
 			</div>
 			<div className="column">
-				<button className="button is-link is-fullwidth" onClick={() => todosToShow(FILTER_STATE.completed)}>
+				<button 
+					className="button is-link is-fullwidth" 
+					onClick={() => todosToShow(FILTER_STATE.completed)}>
 					<span>Completed</span>
 				</button>
 			</div>
 			<div className="column">
-				<button className="button is-link is-fullwidth" onClick={() => todosToShow(FILTER_STATE.todo)}>
+				<button 
+					className="button is-link is-fullwidth" 
+					onClick={() => todosToShow(FILTER_STATE.todo)}>
 					<span>To do</span>
 				</button>
 			</div>
@@ -249,18 +350,29 @@ export default function Todos() {
 	{	todos?.items?.map((item,i) => {
 
 	if(todos.itemsToShow === FILTER_STATE.all
-	|| todos.itemsToShow === FILTER_STATE.achievement && item.achievement
+	|| todos.itemsToShow === FILTER_STATE.completed && item.achievement
 	|| todos.itemsToShow === FILTER_STATE.todo && !item.achievement 
 	) {
+
+	// WHEN you are editing some todo 
+	const editMode = editItems[item.id] || editItems[item.id] === ''
+	// WHen a task should be marked as completed
+	const isTaskCompleted = item.achievement && !editItems[item.id] 
+
 	return (
-		<div className="box" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center'}} key={item.id}>
+		<div  
+			key={item.id}
+			// special color when editing ?
+			className={editMode ? "box" : "box"} 
+			style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
 			<span 
-				className={item.achievement ? "has-text-danger" : ""} 
-				style={item.achievement ? { textDecoration: 'line-through'} : {}}>
-					{ editItems[item.id] || editItems[item.id] === '' ?  
+				className={item.achievement ? "has-text-success" : ""} 
+				style={isTaskCompleted? { textDecoration: 'line-through'} : {}}>
+					{ editMode ?  
 						<input 
 							className="input" 
 							type="text" 
+							style={{ height: '100%', }}
 							value={editItems[item.id]}  
 							onChange={(e) => setEditItems({...editItems, [item.id]: e.target.value})}
 							/> : item.task }
