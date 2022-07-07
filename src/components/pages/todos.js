@@ -16,21 +16,17 @@ import ToolBoxSdk from '../sdk/toolBox-sdk-js'
 import { AuthContext } from '../../utils/contexts/authenticationContext'
 import { APP_CONTEXT, } from '../../utils/reducers/authenticationReducer'
 
-const FILTER_STATE = {
-	all: 0,
-	completed: 1,
-	todo: 2,
-}
-
-const TOKEN_STATE = {
-	expiredToken: "Unauthorized! Access Token was expired!"
-}
+const FILTER_STATE = ToolBoxSdk.api.FILTER_STATE
 
 export default function Todos() {
 
 	const history = useHistory()
 	const { state, dispatch } = useContext(AuthContext)
+
+	// user email
 	const email = state.email
+	// username 
+	const username = state.username
 
 	const [editItems, setEditItems] = useState({})
 
@@ -52,56 +48,51 @@ export default function Todos() {
 	async function handleSubmit(event) {
 		event.preventDefault()
 
-		const postTodo = await ToolBoxSdk.api.postTask(todos.item,email, false)
+		let postTodo = await ToolBoxSdk.api.postTask(todos.item,email, false)
 		
-		let getAllTasks
-
-		if(postTodo.responseStatusCode !== 200 
-		&& postTodo.message === TOKEN_STATE.expiredToken) {
-
-			// use refreshToken to get new accessToken
-			const shouldSignIn = await ToolBoxSdk.api.refreshToken()	
-
-			// force sign in
-			if( shouldSignIn.responseStatusCode !== 200 
-	
-			||( postTodo.responseStatusCode !== 200 
-			&& !postTodo.message === TOKEN_STATE.expiredToken)) {
-				dispatch({
-					type: APP_CONTEXT.setSignedIn,
-					isAuthenticated: false,
-					email: email
-				})
-
-				history.push('/signin')
-
-				return
-			}
-			else {
-
-				// retry to get all tasks
-				getAllTasks = await ToolBoxSdk.api.getAllTasks(email)
-				
-			}
-		}
-
-
-		getAllTasks = await ToolBoxSdk.api.getAllTasks(email)
+		// check response status code
+		let result = await ToolBoxSdk.api.analyseFetchResponse(postTodo, email, history, dispatch, APP_CONTEXT)
 		
 		const todosItems = []
-		const updatedItems = getAllTasks.json
 
-		for (const record of updatedItems) {
+		console.log('result: ', result)
+		if(result >= 1) {
 
-			todosItems.push({
-				task: record.task,
-				achievement: record.achievement,
-				id: record._id,
-			})
+			// accessToken needs to be renew and retry the fetch call
+			if(result == 1) {
+				postTodo = await ToolBoxSdk.api.postTask(todos.item,email, false)
+			}
 
+			console.log('getAllTasks')
+			// no need to renew access token, just continue to fetch data
+			let getAllTasks = await ToolBoxSdk.api.getAllTasks(email)
+
+			const updatedItems = getAllTasks.json
+
+			console.log(updatedItems
+				)
+			for (const record of updatedItems) {
+
+				todosItems.push({
+					task: record.task,
+					achievement: record.achievement,
+					id: record._id,
+				})
+
+			}
+
+			
 		}
 
-		if (todos.item.length > 0) {
+		// need to sign in again, refreshToken needs to be renew
+		if(result == 0) {
+			return
+		}
+
+
+		console.log(todosItems)
+
+		if (todosItems.length > 0) {
 			setTodos({
 				...todos,
 				items: todosItems,
@@ -173,62 +164,48 @@ export default function Todos() {
 		if(editItems[id]) {
 			let updateTask = await ToolBoxSdk.api.updateTask(id, editItems[id], achievement)
 
-		// access token expired
-		if(updateTask.responseStatusCode !== 200
-			&& updateTask.message === TOKEN_STATE.expiredToken) {
+			const result = await ToolBoxSdk.api.analyseFetchResponse(updateTask, email, history, dispatch, APP_CONTEXT)
 
-				// use refreshToken to get new accessToken
-				const shouldSignIn = await ToolBoxSdk.api.refreshToken()	
+			if(result >= 1) {
 
-				// force sign in
-				if( shouldSignIn.responseStatusCode !== 200 
-
-				||( shouldSignIn.responseStatusCode !== 200 
-				&& !shouldSignIn.message === TOKEN_STATE.expiredToken)) {
-					dispatch({
-						type: APP_CONTEXT.setSignedIn,
-						isAuthenticated: false,
-						email: email
-					})
-
-					history.push('/signin')
-
-					return
-				}
-
-
-				else {
-
-					// retry to update task
+				// accessToken needs to be renew and retry the fetch call
+				if(result == 1) {
 					updateTask = await ToolBoxSdk.api.updateTask(id, editItems[id], achievement)
-					
 				}
-			}	
 
-
-			let _editItems = {
-				...editItems,
-			}
-			delete _editItems[id]
-			setEditItems(_editItems)
-
-
-			let _todosItems = []
-
-			for(let item of todos.items) {
-				if(item.id === id) {
-					item = {
-					id:item.id,
-					task: editItems[id],
-					achievement: item.achievement
+				// no need to renew access token, just continue to fetch data
+				let _editItems = {
+					...editItems,
 				}
-				_todosItems.push(item)
-			}
-				else _todosItems.push(item)
+				delete _editItems[id]
+				setEditItems(_editItems)
+	
+	
+				let _todosItems = []
+	
+				for(let item of todos.items) {
+					if(item.id === id) {
+						item = {
+						id:item.id,
+						task: editItems[id],
+						achievement: item.achievement
+					}
+					_todosItems.push(item)
+				}
+					else _todosItems.push(item)
+				}
+	
+				setTodos({...todos, items: _todosItems})
+				return 
+
+				
 			}
 
-			setTodos({...todos, items: _todosItems})
-			return 
+			// need to sign in again, refreshToken needs to be renew
+			if(result == 0) {
+				return
+			}
+
 		}
 		
 		let _editItems = {
@@ -238,6 +215,7 @@ export default function Todos() {
 
 
 		setEditItems(_editItems)
+	
 	}
 
 	useEffect(async() => {
@@ -245,61 +223,48 @@ export default function Todos() {
 		// get all the tasks
 		let allTasks = await ToolBoxSdk.api.getAllTasks(email)
 
-		// access token expired
-		if(allTasks.responseStatusCode !== 200
-		&& allTasks.message === TOKEN_STATE.expiredToken) {
+		const result = await ToolBoxSdk.api.analyseFetchResponse(allTasks, email, history, dispatch, APP_CONTEXT)
 
-			// use refreshToken to get new accessToken
-			const shouldSignIn = await ToolBoxSdk.api.refreshToken()	
+		if(result >= 1) {
 
-			// force sign in
-			if( shouldSignIn.responseStatusCode !== 200 
-	
-			||( shouldSignIn.responseStatusCode !== 200 
-			&& !shouldSignIn.message === TOKEN_STATE.expiredToken)) {
-				dispatch({
-					type: APP_CONTEXT.setSignedIn,
-					isAuthenticated: false,
-					email: email
-				})
-
-				history.push('/signin')
-
-				return
-			}
-
-
-			else {
-
-				// retry to get all tasks
+			// accessToken needs to be renew and retry the fetch call
+			if(result == 1) {
 				allTasks = await ToolBoxSdk.api.getAllTasks(email)
-				
 			}
-		}	
 
+			// no need to renew access token, just continue to fetch data
+			const todosItems = todos.items
+			const recordedTodos = allTasks.json
+			
+			for (const record of recordedTodos) {
+				
+				todosItems.push({
+					task: record.task,
+					achievement: record.achievement,
+					id: record._id,
+	
+				})
+	
+			}
+	
+			setTodos({...todos, items: todosItems})
 
-		const todosItems = todos.items
-		const recordedTodos = allTasks.json
-		
-
-		for (const record of recordedTodos) {
-
-			todosItems.push({
-				task: record.task,
-				achievement: record.achievement,
-				id: record._id,
-
-			})
-
+			
 		}
 
-		setTodos({...todos, items: todosItems})
+		// need to sign in again, refreshToken needs to be renew
+		if(result == 0) {
+			return
+		}
+
+
 
 	},[])
 
 
 
 	return <>
+		<h1 className="title has-text-centered is-3">Welcome {username}</h1>
 		<h3 className="title has-text-centered is-4">TODO input</h3>
 		<form className="box" onSubmit={handleSubmit}>
 			<div className="field">

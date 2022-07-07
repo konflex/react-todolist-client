@@ -20,10 +20,12 @@ function AuthContextProvider({ initialState, children }) {
 
 			let isAuthenticated= localStorage.getItem('isAuthenticated')
 			let email= localStorage.getItem('email')
+			let username = localStorage.getItem('username')
 			
 			return {
 				isAuthenticated: isAuthenticated,
-				email: email
+				email: email,
+				username: username,
 			}
 		}
 

@@ -16,9 +16,11 @@ export function authReducer(state,action) {
 			case APP_CONTEXT.setSignedIn:
 				localStorage.setItem('isAuthenticated', action.isAuthenticated)
 				localStorage.setItem('email', action.email)
+				localStorage.setItem('username', action.username)
 				return {
 					isAuthenticated: action.isAuthenticated,
-					email: action.email
+					email: action.email,
+					username: action.username,
 				}
 			case APP_CONTEXT.setSignedOut:
 				localStorage.clear()

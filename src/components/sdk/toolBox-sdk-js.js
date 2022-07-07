@@ -7,6 +7,7 @@
 import React from "react"
 import ErrorOccured from "./errorOccured"
 
+
 // Api header depending of the env variable 
 const ApiHeader =  process.env.RUN_PRODUCTION_SERVER == 'true' ? process.env.API_HEADER_PRODUCTION : process.env.API_HEADER_DEVELOPMENT 
 
@@ -41,9 +42,11 @@ let ToolBoxSdk = {
 	 * @param {String} confirmPassword 
 	 * @returns Return true if the given password has the right length
 	 */
-		 arePasswordsIdentical(password, confirmPassword) {
-			return password === confirmPassword 
-	}
+	arePasswordsIdentical(password, confirmPassword) {
+		return password === confirmPassword 
+	},
+
+
 }
 
 
@@ -116,6 +119,22 @@ class CoreSDK {
 }
 
 class API extends CoreSDK {
+
+	/**
+	 *@returns the filter state index
+	 */
+	FILTER_STATE = {
+		all: 0,
+		completed: 1,
+		todo: 2,
+	}
+	
+	/**
+	 *@returns the expired token state from response
+	*/
+	TOKEN_STATE = {
+		expiredToken: "Unauthorized! Access Token was expired!",
+	}
 
 	/**
 	 * @summary Log the user in
@@ -274,6 +293,46 @@ class API extends CoreSDK {
 			}})
 	}
 
+
+	/**
+	 * @summary Analyse fetch response, call refreshToken if needed
+	 * @param {Object} response The id of the task
+	 * @param {String} email The user email
+	 * @returns Integers to handle each case
+	*/
+	async analyseFetchResponse(response, email, history, dispatch, APP_CONTEXT) {
+
+		if(response.responseStatusCode !== 200) {
+
+			// use refreshToken to get new accessToken
+			const shouldSignIn = await this.refreshToken()	
+
+			// force sign in
+			if( shouldSignIn.responseStatusCode !== 200 
+	
+			||( response.responseStatusCode !== 200 
+			&& !response.message === this.TOKEN_STATE.expiredToken)) {
+				dispatch({
+					type: APP_CONTEXT.setSignedIn,
+					isAuthenticated: false,
+					email: email
+				})
+
+				history.push('/signin')
+
+				// when refreshToken returns !== 200 and it is needed to sign in again
+				return 0
+			}
+
+			return 1
+					
+		}
+		else {
+			// when response status code is 200 and there is no need to call refreshToken function
+			return 2
+		}
+	}
+
 }
 
 /**
@@ -320,6 +379,8 @@ export class ErrorBoundary extends React.Component {
 		return this.props.children;
 	}
 }
+
+
 
 ToolBoxSdk.api = new API()
 
