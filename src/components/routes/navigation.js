@@ -17,13 +17,15 @@ const NotFound = 	loadable(() => 	import('../pages/notFound'), 	{ fallback: <div
 
 const Navigation = () => {
 
+	const header = "/react-todolist-client"
+
 	return(
 		<Switch>
 			
-			<PrivateRoute exact path="/" 		component={Todos}/>
-			<PrivateRoute exact path="/tasks"  	component={Todos} />
-			<PublicRoute  exact path="/signup" 	component={SignUp} />
-			<PublicRoute  exact path="/signin" 	component={SignIn} />
+			<PrivateRoute exact path={header+"/"} 			component={Todos}/>
+			<PrivateRoute exact path={header+"/tasks"}   	component={Todos} />
+			<PublicRoute  exact path={header+"/signup"}		component={SignUp} />
+			<PublicRoute  exact path={header+"/signin"} 	component={SignIn} />
 
 			<Route path="" component={NotFound} />
 		</Switch>
