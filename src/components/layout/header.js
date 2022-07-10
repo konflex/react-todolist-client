@@ -5,7 +5,7 @@
  * @author FPC
  */
 
-import React, { useContext, } from "react"
+import React, { useContext, useState, } from "react"
 //== React router dom 
 import { useHistory, } from "react-router-dom"
 // == AuthContext 
@@ -18,7 +18,9 @@ export default function Header() {
 
 	const { state, dispatch } = useContext(AuthContext)
 
-	const isAuthenticated = state.isAuthenticated
+	const isAuthenticated = (state.isAuthenticated === 'true')
+
+	const [isActive, setIsActive] = useState(false)
 
 	function handleLogOut() {
 		dispatch({
@@ -29,21 +31,37 @@ export default function Header() {
 		history.push('/signin')
 	}
 	
+	function handleClick () {
+		setIsActive(!isActive)
+	}
+
 	return(
-		<nav className="navbar" role="navigation" aria-label="main navigation">
+		<nav 
+			className="navbar is-fixed-top"
+			role="navigation" 
+			aria-label="main navigation">
 			<div className="navbar-brand">
 				<a className="navbar-item" href="/">
 					<h1 className="title">TODO's</h1>
 				</a>
-
-				<a role="button" className="navbar-burger" aria-label="menu" aria-expanded="false" data-target="navbarBasicExample">
-					<span aria-hidden="true"></span>
-					<span aria-hidden="true"></span>
-					<span aria-hidden="true"></span>
+				{
+					// Mobile view: burger button
+				}
+				<a 	
+					role="button" 
+					className={`navbar-burger burger ${isActive ? 'is-active' : ''}`}
+					aria-label="menu"
+					onClick={handleClick} 
+					aria-expanded="false"
+					data-target="navbarBasicExample">
+						<span aria-hidden="true"></span>
+						<span aria-hidden="true"></span>
+						<span aria-hidden="true"></span>
 				</a>
+					
 			</div>
 
-			<div id="navbarBasicExample" className="navbar-menu">
+			<div id="navbarBasicExample" className={`navbar-menu ${isActive ? 'is-active' : ''}`}>
 				<div className="navbar-end">
 					<div className="navbar-item">
 						<div className="buttons">

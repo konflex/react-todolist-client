@@ -55,7 +55,6 @@ export default function Todos() {
 		
 		const todosItems = []
 
-		console.log('result: ', result)
 		if(result >= 1) {
 
 			// accessToken needs to be renew and retry the fetch call
@@ -63,14 +62,11 @@ export default function Todos() {
 				postTodo = await ToolBoxSdk.api.postTask(todos.item,email, false)
 			}
 
-			console.log('getAllTasks')
 			// no need to renew access token, just continue to fetch data
 			let getAllTasks = await ToolBoxSdk.api.getAllTasks(email)
 
 			const updatedItems = getAllTasks.json
 
-			console.log(updatedItems
-				)
 			for (const record of updatedItems) {
 
 				todosItems.push({
@@ -80,7 +76,6 @@ export default function Todos() {
 				})
 
 			}
-
 			
 		}
 
@@ -88,9 +83,6 @@ export default function Todos() {
 		if(result == 0) {
 			return
 		}
-
-
-		console.log(todosItems)
 
 		if (todosItems.length > 0) {
 			setTodos({
@@ -118,7 +110,31 @@ export default function Todos() {
 		})
 
 		for(const item of todos.items) {
-			if(item.id === id) await ToolBoxSdk.api.updateTask(item.id, item.task, item.achievement)
+
+
+			if(item.id === id) {
+				const response = await ToolBoxSdk.api.updateTask(item.id, item.task, item.achievement)
+
+				// check response status code
+				const result = await ToolBoxSdk.api.analyseFetchResponse(
+					response, 
+					email, 
+					history, dispatch, APP_CONTEXT)
+				
+				if(result >= 1) {
+
+					// accessToken needs to be renew and retry the fetch call
+					if(result == 1) {
+						response = await ToolBoxSdk.api.updateTask(item.id, item.task, item.achievement)
+					}
+					
+				}
+
+				// need to sign in again, refreshToken needs to be renew
+				if(result == 0) {
+					return
+				}
+			}
 			else continue
 		}
 
@@ -131,7 +147,28 @@ export default function Todos() {
 	async function handleDelete(id) {
 		const filteredItems = todos.items.filter(item => item.id !== id)
 
-		await ToolBoxSdk.api.deleteTask(id)
+
+		const response = await ToolBoxSdk.api.deleteTask(id)
+
+		// check response status code
+		const result = await ToolBoxSdk.api.analyseFetchResponse(
+			response, 
+			email, 
+			history, dispatch, APP_CONTEXT)
+		
+		if(result >= 1) {
+
+			// accessToken needs to be renew and retry the fetch call
+			if(result == 1) {
+				response = await ToolBoxSdk.api.deleteTask(id)
+			}
+			
+		}
+
+		// need to sign in again, refreshToken needs to be renew
+		if(result == 0) {
+			return
+		}
 
 		setTodos({
 			...todos,
@@ -142,7 +179,29 @@ export default function Todos() {
 	async function handleDeleteDoneTasks() {
 		const filteredItems = todos.items.filter(item => item.achievement === false)
 
-		await ToolBoxSdk.api.deleteManyTasks({email: email , achievement: true,})
+
+		const response = await ToolBoxSdk.api.deleteManyTasks({email: email , achievement: true,})
+
+		// check response status code
+		const result = await ToolBoxSdk.api.analyseFetchResponse(
+			response, 
+			email, 
+			history, dispatch, APP_CONTEXT)
+
+		if(result >= 1) {
+
+			// accessToken needs to be renew and retry the fetch call
+			if(result == 1) {
+				response = await ToolBoxSdk.api.deleteManyTasks({email: email , achievement: true,})
+			}
+			
+		}
+
+		// need to sign in again, refreshToken needs to be renew
+		if(result == 0) {
+			return
+		}
+
 		setTodos({
 			...todos,
 			items: filteredItems
@@ -151,7 +210,29 @@ export default function Todos() {
 
 	async function clearList () {
 
-		await ToolBoxSdk.api.deleteManyTasks({email: email})
+		//TODO
+
+		const response = await ToolBoxSdk.api.deleteManyTasks({email: email})
+
+		// check response status code
+		const result = await ToolBoxSdk.api.analyseFetchResponse(
+			response, 
+			email, 
+			history, dispatch, APP_CONTEXT)
+
+		if(result >= 1) {
+
+			// accessToken needs to be renew and retry the fetch call
+			if(result == 1) {
+				response = await ToolBoxSdk.api.deleteManyTasks({email: email})
+			}
+			
+		}
+
+		// need to sign in again, refreshToken needs to be renew
+		if(result == 0) {
+			return
+		}
 
 		setTodos({
 			...todos,
@@ -264,7 +345,7 @@ export default function Todos() {
 
 
 	return <>
-		<h1 className="title has-text-centered is-3">Welcome {username}</h1>
+		<h1 className="title has-text-centered is-3 is-underlined">Welcome {username}</h1>
 		<h3 className="title has-text-centered is-4">TODO input</h3>
 		<form className="box" onSubmit={handleSubmit}>
 			<div className="field">

@@ -7,24 +7,19 @@
 import React, { useContext, useEffect, useState, } from 'react'
 import { Route, useHistory, Redirect} from 'react-router-dom'
 import { AuthContext } from '../../utils/contexts/authenticationContext'
-import ToolBoxSdk from '../sdk/toolBox-sdk-js'
-import { APP_CONTEXT } from '../../utils/reducers/authenticationReducer'
-
 
 const  PublicRoute = ({ component: Component, ...rest }) => {
-	//Check sign in/out mode
 
 	const { state , dispatch } = useContext(AuthContext)
 
-	const isAuthenticated = false
+	//Check sign in/out mode
+	let isAuthenticated = state.isAuthenticated
 	
-	//state.isAuthenticated
-	
-	// const history = useHistory()
-
+	if(typeof isAuthenticated === 'string') isAuthenticated = (state.isAuthenticated === 'true')
 
 	if(!isAuthenticated) return <Route {...rest} render={(props) => <Component {...props} />  } />
-	else return <Redirect to='/tasks' />
+	
+	else if(isAuthenticated) return <Redirect to='/tasks' />
 }
 
 export default PublicRoute

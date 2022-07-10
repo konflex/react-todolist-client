@@ -19,12 +19,11 @@ const Navigation = () => {
 
 	return(
 		<Switch>
-			<Route exact path="/">
-				<Redirect to="/tasks" />
-			</Route>
-			<PrivateRoute exact path="/tasks"  component={Todos} />
-			<PublicRoute  exact path="/signup" component={SignUp} />
-			<PublicRoute  exact path="/signin" component={SignIn} />
+			
+			<PrivateRoute exact path="/" 		component={Todos}/>
+			<PrivateRoute exact path="/tasks"  	component={Todos} />
+			<PublicRoute  exact path="/signup" 	component={SignUp} />
+			<PublicRoute  exact path="/signin" 	component={SignIn} />
 
 			<Route path="" component={NotFound} />
 		</Switch>

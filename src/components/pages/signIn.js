@@ -47,8 +47,6 @@ export default function SignIn() {
 
 		if(response.json && response.json.isAuthenticated && response.responseStatusCode === 200) {
 
-			console.log(response)
-
 			dispatch({
 				type: APP_CONTEXT.setSignedIn,
 				isAuthenticated: true,
@@ -56,7 +54,7 @@ export default function SignIn() {
 				username: response.json.username,
 			})
 
-			history.push('/tasks')
+			// history.push('/tasks')
 		}
 		if(response.json && response.responseStatusCode === 401) {
 			setError(true)

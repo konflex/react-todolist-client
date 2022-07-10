@@ -10,7 +10,9 @@ import React from "react"
 export default function MiddleContainer({children}) {	
 	
 	return (
-	<section className="section">
-		<div className="container">{children}</div>
+	<section className="container is-centered">
+		<div className="section">
+			{children}
+		</div>
 	</section>
 )}
