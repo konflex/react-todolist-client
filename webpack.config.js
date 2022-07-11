@@ -49,7 +49,7 @@ module.exports = env => {
 
 	const devtool = 'inline-source-map'
 
-	const mode = 'development'
+	const mode = process.env.NODE_ENV == 'production' ? 'production' : 'development'
 
 	const _module = {
 		rules: [
