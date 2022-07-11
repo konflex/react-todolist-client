@@ -17,14 +17,14 @@ const htmlPlugin = new HtmlWebPackPlugin({
 	hash: true,
 })
 
-const serverOptions = process.env.RUN_PRODUCTION_SERVER == "true" ? 
+const serverOptions = /* process.env.RUN_PRODUCTION_SERVER == "true" ? 
 {
 	type: 'https',
 	options: {
 		key:  fs.readFileSync('./server.key'),
 		cert: fs.readFileSync('./server.crt')
 	},
-} : {}
+} : */{}
 
 
 module.exports = env => { 
