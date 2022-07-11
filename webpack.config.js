@@ -9,16 +9,33 @@ const webpack = require("webpack")
 
 require('dotenv').config()
 
+const fs = require('fs')
+
 const htmlPlugin = new HtmlWebPackPlugin({
 	template: './src/index.html',
 	filename: './index.html',
 	hash: true,
 })
 
+const serverOptions = process.env.RUN_PRODUCTION_SERVER == "true" ? 
+{
+	type: 'https',
+	options: {
+		key:  fs.readFileSync('./server.key'),
+		cert: fs.readFileSync('./server.crt')
+	},
+} : {}
+
 
 module.exports = env => { 
 
 	const devServer = {
+
+		server: serverOptions,
+
+		port: 8080,
+		host: 'localhost',
+
 		client: {
 			overlay: false,
 		},

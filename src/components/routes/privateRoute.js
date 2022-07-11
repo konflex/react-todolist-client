@@ -10,8 +10,6 @@ import { AuthContext } from '../../utils/contexts/authenticationContext'
 
 const PrivateRoute = ({ component:Component, ...rest}) => {
 
-	const header = "/react-todolist-client"
-
 	//Check sign in/out mode
 	const { state, dispatch } = useContext(AuthContext)
 	// bool depending of the auth state of the user
@@ -21,7 +19,7 @@ const PrivateRoute = ({ component:Component, ...rest}) => {
 
 	if(isAuthenticated) return <Route {...rest} render={(props) => <Component {...props} />  } />
 
-	else return <Redirect to={header+"/signin"} />
+	else return <Redirect to="/signin" />
 }
 
 export default PrivateRoute

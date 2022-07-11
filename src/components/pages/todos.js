@@ -304,6 +304,8 @@ export default function Todos() {
 		// get all the tasks
 		let allTasks = await ToolBoxSdk.api.getAllTasks(email)
 
+
+		
 		const result = await ToolBoxSdk.api.analyseFetchResponse(allTasks, email, history, dispatch, APP_CONTEXT)
 
 		if(result >= 1) {
@@ -339,7 +341,7 @@ export default function Todos() {
 		}
 
 
-
+		
 	},[])
 
 

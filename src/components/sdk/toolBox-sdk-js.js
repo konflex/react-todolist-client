@@ -149,7 +149,7 @@ class API extends CoreSDK {
 			params: {
 				method: 'POST',
 				credentials: 'include',
-				// headers: this.headers(),
+				headers: this.headers(),
 				body: JSON.stringify({
 					email: email,
 					password: password,
@@ -285,7 +285,7 @@ class API extends CoreSDK {
 	 * @summary Refresh a token that has expired
 	*/
 	refreshToken() {
-		return this.apiCall(`${ApiHeader}/api/auth/refreshToken`, {
+		return this.apiCall(`${ApiHeader}/api/auth/refreshtoken`, {
 			params: {
 				method: 'GET',
 				credentials: 'include',
@@ -312,6 +312,7 @@ class API extends CoreSDK {
 	
 			||( response.responseStatusCode !== 200 
 			&& !response.message === this.TOKEN_STATE.expiredToken)) {
+
 				dispatch({
 					type: APP_CONTEXT.setSignedIn,
 					isAuthenticated: false,

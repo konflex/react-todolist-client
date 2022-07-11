@@ -10,8 +10,6 @@ import { AuthContext } from '../../utils/contexts/authenticationContext'
 
 const  PublicRoute = ({ component: Component, ...rest }) => {
 
-	const header = "/react-todolist-client"
-
 	const { state , dispatch } = useContext(AuthContext)
 
 	//Check sign in/out mode
@@ -21,7 +19,7 @@ const  PublicRoute = ({ component: Component, ...rest }) => {
 
 	if(!isAuthenticated) return <Route {...rest} render={(props) => <Component {...props} />  } />
 	
-	else if(isAuthenticated) return <Redirect to={header+"/tasks"}  />
+	else if(isAuthenticated) return <Redirect to="/tasks"  />
 }
 
 export default PublicRoute
