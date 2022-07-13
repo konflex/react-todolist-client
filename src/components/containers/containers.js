@@ -10,8 +10,8 @@ import React from "react"
 export default function MiddleContainer({children}) {	
 	
 	return (
-	<section className="container is-centered">
-		<div className="section">
+	<section className="section is-flex">
+		<div className="container is-centered is-max-desktop">
 			{children}
 		</div>
 	</section>

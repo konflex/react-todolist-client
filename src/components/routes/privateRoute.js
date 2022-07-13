@@ -13,9 +13,11 @@ const PrivateRoute = ({ component:Component, ...rest}) => {
 	//Check sign in/out mode
 	const { state, dispatch } = useContext(AuthContext)
 	// bool depending of the auth state of the user
-	let isAuthenticated = state.isAuthenticated
+	let isAuthenticated
 
-	if(typeof isAuthenticated === 'string') isAuthenticated = (state.isAuthenticated === 'true')
+	if(typeof state.isAuthenticated == 'string') isAuthenticated = (state.isAuthenticated === 'true')
+	else if(typeof state.isAuthenticated == 'boolean') isAuthenticated = state.isAuthenticated
+	else isAuthenticated = false
 
 	if(isAuthenticated) return <Route {...rest} render={(props) => <Component {...props} />  } />
 

@@ -63,7 +63,7 @@ export default function SignIn() {
 
 	return(
 		<>
-		<h3 className="title has-text-centered is-4">Sign in</h3>
+		<h3 className="title has-text-centered is-4">Log in</h3>
 		
 		<form className="box" onSubmit={(e) => handleSubmit	(e) }>
 			<div className="field">
@@ -96,7 +96,11 @@ export default function SignIn() {
 					/>
 				</div>
 			</div>
-			<button href="#" className="button is-link" disabled={!isSubmitEnable} type="submit" >Sign in</button>
+			<button href="#" className="button is-block is-link is-fullwidth" disabled={!isSubmitEnable} type="submit" >Log in&nbsp;<i class="fa fa-sign-in" aria-hidden="true"></i></button>
+			
+			<p class="has-text-grey mt-2">
+				<a href="/signup">No account yet ?</a>
+            </p>
 		</form>
 		</>
 	)

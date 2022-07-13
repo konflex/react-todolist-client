@@ -13,9 +13,11 @@ const  PublicRoute = ({ component: Component, ...rest }) => {
 	const { state , dispatch } = useContext(AuthContext)
 
 	//Check sign in/out mode
-	let isAuthenticated = state.isAuthenticated
+	let isAuthenticated
 	
-	if(typeof isAuthenticated === 'string') isAuthenticated = (state.isAuthenticated === 'true')
+	if(typeof state.isAuthenticated == 'string') isAuthenticated = (state.isAuthenticated === 'true')
+	else if(typeof state.isAuthenticated == 'boolean') isAuthenticated = state.isAuthenticated
+	else isAuthenticated = false
 
 	if(!isAuthenticated) return <Route {...rest} render={(props) => <Component {...props} />  } />
 	

@@ -16,9 +16,13 @@ export default function Header() {
 
 	let history = useHistory()
 
-	const { state, dispatch } = useContext(AuthContext)
+	const { state, dispatch, } = useContext(AuthContext)
 
-	const isAuthenticated = (state.isAuthenticated === 'true')
+	let isAuthenticated
+	
+	if(typeof state.isAuthenticated == 'string') isAuthenticated = (state.isAuthenticated === 'true')
+	else if(typeof state.isAuthenticated == 'boolean') isAuthenticated = state.isAuthenticated
+	else isAuthenticated = false
 
 	const [isActive, setIsActive] = useState(false)
 

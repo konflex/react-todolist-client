@@ -126,9 +126,13 @@ export default function SignUp() {
 					/>
 				</div>
 			</div>
-			<button className="button is-link">Sign up</button>
+			<button href="#" className="button is-block is-link is-fullwidth" disabled={!isSubmitEnable} type="submit" >Sign up&nbsp;<i class="fa fa-sign-in" aria-hidden="true"></i></button>
 
 			{ errorMessage && <p className="help is-danger">{errorMessage} </p> }
+
+			<p class="has-text-grey mt-2">
+				<a href="/signin">Already have an account ?</a>
+            </p>
 
 		</form>
 		</>
