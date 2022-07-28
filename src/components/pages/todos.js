@@ -348,8 +348,9 @@ export default function Todos() {
 
 	return <>
 		<h1 className="title has-text-centered is-3 is-underlined">Welcome {username}</h1>
-		<h3 className="title has-text-centered is-4">TODO input</h3>
+		
 		<form className="box" onSubmit={handleSubmit}>
+			<h3 className="title has-text-centered is-4">Add some task</h3>
 			<div className="field">
 				<div className="control">
 				<input 
@@ -368,7 +369,7 @@ export default function Todos() {
 		{  todos?.items 
 		&& todos.items.length > 0 
 		&&	<>
-		<h3 className="title has-text-centered is-4">TODO list</h3>
+		<h3 className="title has-text-centered is-4">Your tasks</h3>
 		<div className="columns">
 			<div className="column">
 				<button 

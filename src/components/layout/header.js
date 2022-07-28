@@ -83,7 +83,7 @@ export default function Header() {
 							<strong>Sign up</strong>
 						</a>
 						<a className="button is-light"  href="/signin">
-							Log in
+							Login
 						</a>
 						</>
 						}

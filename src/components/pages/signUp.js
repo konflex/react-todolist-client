@@ -62,9 +62,8 @@ export default function SignUp() {
 	}
 	
 	return(
-		<>
-		<h3 className="title has-text-centered is-4">Sign up</h3>
 		<form className="box" onSubmit={(e) => handleSubmit	(e) }>
+		<h3 className="title has-text-centered is-4">Sign up</h3>
 		<div className="field">
 				<label className="label">Username</label>
 				<div className="control">
@@ -135,6 +134,5 @@ export default function SignUp() {
             </p>
 
 		</form>
-		</>
 	)
 }

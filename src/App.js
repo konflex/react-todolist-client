@@ -9,6 +9,7 @@ import React, { Suspense, useState, useEffect, StrictMode, } from "react"
 import { AuthContextProvider } from './utils/contexts/authenticationContext'
 import {BrowserRouter, useLocation, } from 'react-router-dom'
 import Header from './components/layout/header'
+import Footer from './components/layout/footer'
 import MiddleContainer from './components/containers/containers'
 import { ErrorBoundary, } from "./components/sdk/toolBox-sdk-js"
 import Navigation from './components/routes/navigation'
@@ -81,6 +82,9 @@ function Layout() {
 					<Navigation />
 				</ErrorBoundary>
 			</MiddleContainer>
+			<ErrorBoundary>
+				<Footer />
+			</ErrorBoundary>
 		</ErrorBoundary>
 	</>
 }
