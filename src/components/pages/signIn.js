@@ -94,9 +94,9 @@ export default function SignIn() {
 					/>
 				</div>
 			</div>
-			<button href="#" className="button is-block is-link is-fullwidth" disabled={!isSubmitEnable} type="submit" >Login&nbsp;<i class="fa fa-sign-in" aria-hidden="true"></i></button>
+			<button href="#" className="button is-block is-link is-fullwidth" disabled={!isSubmitEnable} type="submit" >Login&nbsp;<i className="fa fa-sign-in" aria-hidden="true"></i></button>
 			
-			<p class="has-text-grey mt-2">
+			<p className="has-text-grey mt-2">
 				<a href="/signup">No account yet ?</a>
             </p>
 		</form>

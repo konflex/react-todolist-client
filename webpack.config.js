@@ -17,34 +17,35 @@ const htmlPlugin = new HtmlWebPackPlugin({
 	hash: true,
 })
 
-const serverOptions = /* process.env.RUN_PRODUCTION_SERVER == "true" ? 
+const serverOptions = process.env.NODE_ENV == "development" && process.env.NODE_ENV == "true" ? 
 {
 	type: 'https',
 	options: {
-		key:  fs.readFileSync('./server.key'),
-		cert: fs.readFileSync('./server.crt')
+		key:  fs.readFileSync('./todo.key'),
+		cert: fs.readFileSync('./todo.crt')
 	},
-} : */{}
-
+} : {}
 
 module.exports = env => { 
 
 	const devServer = {
 
 		server: serverOptions,
-
+		host: process.env.NODE_ENV == "development" && 
+			  process.env.NODE_ENV == "true" ? process.env.HOST : 'localhost',
 		port: 8080,
-		host: 'localhost',
 
 		client: {
 			overlay: false,
 		},
+		
 		historyApiFallback: {
 			disableDotRule:true,
 			open: true,
 			hot: false,
 			inline: false,
 		}
+
 	}
 
 	const devtool = 'inline-source-map'
@@ -78,6 +79,7 @@ module.exports = env => {
 		mode,
 		module: _module,
 		plugins,
+		cache:false,
 	}
 
 	return conf
