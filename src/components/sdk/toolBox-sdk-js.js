@@ -46,6 +46,7 @@ let ToolBoxSdk = {
 		return password === confirmPassword 
 	},
 
+	countPerPage: 7
 
 }
 

@@ -19,14 +19,12 @@ const Landing = 	loadable(() => import('../pages/landing'), 		{ fallback: <div><
 const Navigation = () => {
 
 	return(
-		<Switch>
-			
+		<Switch>	
 			<PublicRoute  exact path="/" 		component={Landing}/>
 			<PrivateRoute exact path="/tasks"   component={Todos} />
 			<PublicRoute  exact path="/signup"	component={SignUp} />
 			<PublicRoute  exact path="/signin" 	component={SignIn} />
 			<Route 				path="*" 		component={NotFound} />
-
 		</Switch>
 	)
 }

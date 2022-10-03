@@ -62,43 +62,54 @@ export default function SignIn() {
 	}
 
 	return(
-		<form className="box" onSubmit={(e) => handleSubmit	(e) }>
-		<h3 className="title has-text-centered is-4">Login</h3>
-			<div className="field">
-				<label className="label">Email</label>
-				<div className="control">
-				<input 
-					className={classNames("input", {
-						"is-danger": !isEmailAddressValid && credential.email.length !== 0
-					})} 
+
+
+
+
+		<form className="" onSubmit={(e) => handleSubmit	(e) }>
+		<h3 className="">Login</h3>
+			<div className="">
+				<label className="">Email</label>
+				<div className="">
+				<input
+				
+				
+					// className={classNames("input", {
+					// 	"is-danger": !isEmailAddressValid && credential.email.length !== 0
+					// })} 
+					className="input styled-input"
 					type="email" 
 					placeholder="e.g. alex@example.com" 
 					onChange={handleChange}
 					/>
 				</div>
 
-				{ !isEmailAddressValid && credential.email.length !== 0 && <p className="help is-danger">This email address is not valid</p> }
+				{ !isEmailAddressValid && credential.email.length !== 0 && <p className="">This email address is not valid</p> }
 
-				{ error && <p className="help is-danger">Email or password is incorrect</p>}
+				{ error && <p className="">Email or password is incorrect</p>}
 			</div>
 
 
-			<div className="field">
-				<label className="label">Password</label>
-				<div className="control">
+			<div className="">
+				<label className="">Password</label>
+				<div className="">
 				<input 
-					className="input" 
+					className="input styled-input" 
 					type="password" 
 					placeholder="Password" 
 					onChange={handleChange}
 					/>
 				</div>
 			</div>
-			<button href="#" className="button is-block is-link is-fullwidth" disabled={!isSubmitEnable} type="submit" >Login&nbsp;<i className="fa fa-sign-in" aria-hidden="true"></i></button>
+			<button href="#" className="" disabled={!isSubmitEnable} type="submit" >Login&nbsp;<i className="fa fa-sign-in" aria-hidden="true"></i></button>
 			
-			<p className="has-text-grey mt-2">
+
+
+			<p className="">
 				<a href="/signup">No account yet ?</a>
             </p>
 		</form>
+
+	
 	)
 }

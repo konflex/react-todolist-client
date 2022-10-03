@@ -5,30 +5,54 @@
  * @author FPC
  */
 
-import React, { useState, useEffect, useContext, } from "react"
+// == React
+import React, { useState, useEffect, useContext, useCallback, useRef, } from "react"
 //== React router dom 
 import { useHistory } from "react-router-dom"
-
+// == UUID
 import { v1 as uuid } from 'uuid'
 // == SDK
 import ToolBoxSdk from '../sdk/toolBox-sdk-js'
 // == AuthContext 
 import { AuthContext } from '../../utils/contexts/authenticationContext'
 import { APP_CONTEXT, } from '../../utils/reducers/authenticationReducer'
+// AddToDoInput component
+import AddToDoInput from '../layout/AddToDoInput'
+// TabItems component
+import TabItems from "../layout/tabItems"
+// framer-motion
+import { motion } from 'framer-motion'
+// TodoListItemActionButton 
+import TodoListItemActionButtons from '../layout/todoListItemActionButton'
+// TodoListEmptyState
+import TodoListEmptyState from "../layout/todoListEmptyState"
+// Icons 
+import { CheckIcon, TrashIcon, } from '@iconicicons/react'
+// Pagination component
+import Pagination from "rc-pagination"
+
 
 const FILTER_STATE = ToolBoxSdk.api.FILTER_STATE
+const countPerPage = ToolBoxSdk.countPerPage
 
 export default function Todos() {
+	// Number of elements per page
+	// const countPerPage = 7
+	// current page number
+	const [currentPage, setCurrentPage] = React.useState(1)
 
 	const history = useHistory()
-	const { state, dispatch } = useContext(AuthContext)
+	const { state, dispatch, } = useContext(AuthContext)
 
 	// user email
 	const email = state.email
 	// username 
 	const username = state.username
-
+	// 
 	const [editItems, setEditItems] = useState({})
+
+	// enum to handle when user need to sign in again
+	const [shouldSignIn, setShouldSignIn] = useState(0)
 
 	const [todos, setTodos]= useState({
 		items: [],
@@ -38,70 +62,18 @@ export default function Todos() {
 		editItem: false,
 	})
 
-	const handleChange = event => {
-		setTodos({
-			...todos,
-			item: event.target.value
-		})
-	}
+	// filtered items to display 
+	const [filteredItems, setFilteredItems] = useState([])
+	// The active filter can be: All, pending or completed tasks
+	const [activeFilter, setActiveFilter] = useState(FILTER_STATE.all)
+	// nothingToRender on the page
+	const [nothingToRender, setNothingToRender] = useState(false)
+	// input width 
+	const [editWidth, setEditWidth] = useState(0)
 
-	async function handleSubmit(event) {
-		event.preventDefault()
+	async function handleDoneTask (e) {
 
-		let postTodo = await ToolBoxSdk.api.postTask(todos.item,email, false)
-		
-		// check response status code
-		let result = await ToolBoxSdk.api.analyseFetchResponse(postTodo, email, history, dispatch, APP_CONTEXT)
-		
-		const todosItems = []
-
-		if(result >= 1) {
-
-			// accessToken needs to be renew and retry the fetch call
-			if(result == 1) {
-				postTodo = await ToolBoxSdk.api.postTask(todos.item,email, false)
-			}
-
-			// no need to renew access token, just continue to fetch data
-			let getAllTasks = await ToolBoxSdk.api.getAllTasks(email)
-
-			const updatedItems = getAllTasks.json
-
-			for (const record of updatedItems) {
-
-				todosItems.push({
-					task: record.task,
-					achievement: record.achievement,
-					id: record._id,
-				})
-
-			}
-			
-		}
-
-		// need to sign in again, refreshToken needs to be renew
-		if(result == 0) {
-			return
-		}
-
-		if (todosItems.length > 0) {
-			setTodos({
-				...todos,
-				items: todosItems,
-				id: uuid(),
-				item: '',
-			})
-		}
-	}
-
-	const todosToShow = string => {
-		setTodos({
-			...todos,
-			itemsToShow: string
-		})
-	}
-
-	async function handleDoneTask(id) {
+		const id = e.target.value
 
 		const filteredItems = todos.items.map(item => {
 			
@@ -116,22 +88,22 @@ export default function Todos() {
 				const response = await ToolBoxSdk.api.updateTask(item.id, item.task, item.achievement)
 
 				// check response status code
-				const result = await ToolBoxSdk.api.analyseFetchResponse(
+				const shouldSignIn = await ToolBoxSdk.api.analyseFetchResponse(
 					response, 
 					email, 
 					history, dispatch, APP_CONTEXT)
 				
-				if(result >= 1) {
+				if(shouldSignIn >= 1) {
 
 					// accessToken needs to be renew and retry the fetch call
-					if(result == 1) {
+					if(shouldSignIn == 1) {
 						response = await ToolBoxSdk.api.updateTask(item.id, item.task, item.achievement)
 					}
 					
 				}
 
 				// need to sign in again, refreshToken needs to be renew
-				if(result == 0) {
+				if(shouldSignIn == 0) {
 					return
 				}
 			}
@@ -144,61 +116,29 @@ export default function Todos() {
 		})
 	}
 
-	async function handleDelete(id) {
-		const filteredItems = todos.items.filter(item => item.id !== id)
-
-
-		const response = await ToolBoxSdk.api.deleteTask(id)
-
-		// check response status code
-		const result = await ToolBoxSdk.api.analyseFetchResponse(
-			response, 
-			email, 
-			history, dispatch, APP_CONTEXT)
-		
-		if(result >= 1) {
-
-			// accessToken needs to be renew and retry the fetch call
-			if(result == 1) {
-				response = await ToolBoxSdk.api.deleteTask(id)
-			}
-			
-		}
-
-		// need to sign in again, refreshToken needs to be renew
-		if(result == 0) {
-			return
-		}
-
-		setTodos({
-			...todos,
-			items: filteredItems
-		})
-	}
-
 	async function handleDeleteDoneTasks() {
-		const filteredItems = todos.items.filter(item => item.achievement === false)
 
+		const filteredItems = todos.items.filter(item => item.achievement === false)
 
 		const response = await ToolBoxSdk.api.deleteManyTasks({email: email , achievement: true,})
 
 		// check response status code
-		const result = await ToolBoxSdk.api.analyseFetchResponse(
+		const shouldSignIn = await ToolBoxSdk.api.analyseFetchResponse(
 			response, 
 			email, 
 			history, dispatch, APP_CONTEXT)
 
-		if(result >= 1) {
+		if(shouldSignIn >= 1) {
 
 			// accessToken needs to be renew and retry the fetch call
-			if(result == 1) {
+			if(shouldSignIn == 1) {
 				response = await ToolBoxSdk.api.deleteManyTasks({email: email , achievement: true,})
 			}
 			
 		}
 
 		// need to sign in again, refreshToken needs to be renew
-		if(result == 0) {
+		if(shouldSignIn == 0) {
 			return
 		}
 
@@ -211,26 +151,25 @@ export default function Todos() {
 	async function clearList () {
 
 		//TODO
-
 		const response = await ToolBoxSdk.api.deleteManyTasks({email: email})
 
 		// check response status code
-		const result = await ToolBoxSdk.api.analyseFetchResponse(
+		const shouldSignIn = await ToolBoxSdk.api.analyseFetchResponse(
 			response, 
 			email, 
 			history, dispatch, APP_CONTEXT)
 
-		if(result >= 1) {
+		if(shouldSignIn >= 1) {
 
 			// accessToken needs to be renew and retry the fetch call
-			if(result == 1) {
+			if(shouldSignIn == 1) {
 				response = await ToolBoxSdk.api.deleteManyTasks({email: email})
 			}
 			
 		}
 
 		// need to sign in again, refreshToken needs to be renew
-		if(result == 0) {
+		if(shouldSignIn == 0) {
 			return
 		}
 
@@ -238,87 +177,18 @@ export default function Todos() {
 			...todos,
 			items: []
 		})
+
 	}
 
-	const handleEdit = async (id, task, achievement) => {
 
-		if(editItems[id]) {
-			let updateTask = await ToolBoxSdk.api.updateTask(id, editItems[id], achievement)
+	const getAllTasks = useCallback(async () => {
+		let response = await ToolBoxSdk.api.getAllTasks(email)
 
-			const result = await ToolBoxSdk.api.analyseFetchResponse(updateTask, email, history, dispatch, APP_CONTEXT)
-
-			if(result >= 1) {
-
-				// accessToken needs to be renew and retry the fetch call
-				if(result == 1) {
-					updateTask = await ToolBoxSdk.api.updateTask(id, editItems[id], achievement)
-				}
-
-				// no need to renew access token, just continue to fetch data
-				let _editItems = {
-					...editItems,
-				}
-				delete _editItems[id]
-				setEditItems(_editItems)
-	
-	
-				let _todosItems = []
-	
-				for(let item of todos.items) {
-					if(item.id === id) {
-						item = {
-						id:item.id,
-						task: editItems[id],
-						achievement: item.achievement
-					}
-					_todosItems.push(item)
-				}
-					else _todosItems.push(item)
-				}
-	
-				setTodos({...todos, items: _todosItems})
-				return 
-
-				
-			}
-
-			// need to sign in again, refreshToken needs to be renew
-			if(result == 0) {
-				return
-			}
-
-		}
-		
-		let _editItems = {
-			...editItems,
-			[id]: task
-		}
-
-
-		setEditItems(_editItems)
-	
-	}
-
-	useEffect(async() => {
-
-		// get all the tasks
-		let allTasks = await ToolBoxSdk.api.getAllTasks(email)
-
-
-		
-		const result = await ToolBoxSdk.api.analyseFetchResponse(allTasks, email, history, dispatch, APP_CONTEXT)
-
-		if(result >= 1) {
-
-			// accessToken needs to be renew and retry the fetch call
-			if(result == 1) {
-				allTasks = await ToolBoxSdk.api.getAllTasks(email)
-			}
-
+		if(response.responseStatusCode === 200) {
 			// no need to renew access token, just continue to fetch data
-			const todosItems = todos.items
-			const recordedTodos = allTasks.json
-			
+			const todosItems = []
+			const recordedTodos = response.json
+
 			for (const record of recordedTodos) {
 				
 				todosItems.push({
@@ -327,136 +197,149 @@ export default function Todos() {
 					id: record._id,
 	
 				})
-	
 			}
-	
-			setTodos({...todos, items: todosItems})
 
-			
+			setTodos({...todos, items: todosItems})
+		} 
+		else {
+			let shouldSignIn = await ToolBoxSdk.api.analyseFetchResponse(response, email, history, dispatch, APP_CONTEXT)
+			setShouldSignIn(shouldSignIn)
+		}
+		
+	},[])
+
+	useEffect(() => {
+		getAllTasks()
+
+		if(shouldSignIn >= 1) {
+			// accessToken needs to be renew and retry the fetch call
+			if(shouldSignIn == 1) {
+				getAllTasks()
+			}
 		}
 
 		// need to sign in again, refreshToken needs to be renew
-		if(result == 0) {
+		if(shouldSignIn == 0) {
 			return
 		}
 
+	}, [])
 
-		
+	const updatePage = p => {
+		setCurrentPage(p)
+	}
+
+	const firstItemOfThePage = currentPage === 1 ? 0 : countPerPage * (currentPage - 1)
+
+	if(nothingToRender) {
+		setCurrentPage(currentPage - 1)
+		setNothingToRender(false)
+	}
+
+	useEffect(() => {
+
 	},[])
 
 
 
+	const spanRef = useRef()
+	const [spanWidth, setSpanWidth] = useState(0)
+
 	return <>
-		<h1 className="title has-text-centered is-3 is-underlined">Welcome {username}</h1>
-		
-		<form className="box" onSubmit={handleSubmit}>
-			<h3 className="title has-text-centered is-4">Add some task</h3>
-			<div className="field">
-				<div className="control">
-				<input 
-					className="input" 
-					type="text" 
-					placeholder="NEW TODO" 
-					value={todos.item}
-					onChange={handleChange} />
-				</div>
-			</div>
-			<button className="button is-link is-fullwidth">
-				  <span>Add new task</span>
-			</button>
-		</form>
 
-		{  todos?.items 
-		&& todos.items.length > 0 
-		&&	<>
-		<h3 className="title has-text-centered is-4">Your tasks</h3>
-		<div className="columns">
-			<div className="column">
-				<button 
-					className="button is-link is-fullwidth" 
-					onClick={() => todosToShow(FILTER_STATE.all)}>
-					<span>All</span>
-				</button>
-			</div>
-			<div className="column">
-				<button 
-					className="button is-link is-fullwidth" 
-					onClick={() => todosToShow(FILTER_STATE.completed)}>
-					<span>Completed</span>
-				</button>
-			</div>
-			<div className="column">
-				<button 
-					className="button is-link is-fullwidth" 
-					onClick={() => todosToShow(FILTER_STATE.todo)}>
-					<span>To do</span>
-				</button>
-			</div>
+		<div className="persistent-header">
+			<AddToDoInput todos={todos} setTodos={setTodos} />
+			<TabItems todos={todos} filteredItems={filteredItems} setFilteredItems={setFilteredItems} activeFilter={activeFilter} setActiveFilter={setActiveFilter}/>
 		</div>
-		</>
+	{
+		filteredItems.length === 0 && <TodoListEmptyState filterOption={activeFilter} />
+	}
+	
+	{
+		filteredItems.length > 0 && 
+			<div style={{ display: 'flex', justifyContent: 'space-between', margin: '10px 0'}}>
+				{ todos?.items.length > 0 &&	
+					<div style={{ display: 'contents'}}>
+							<button className='delete-tasks-button' onClick={() => clearList()}><TrashIcon />Delete all</button>
+							<button className='delete-tasks-button' onClick={() => handleDeleteDoneTasks()}><CheckIcon />Delete completed</button>
+							
+					</div>	
+				}
+					
+				<Pagination 
+				showTitle={false}
+				simple
+				pageSize={countPerPage}
+				onChange={updatePage}
+				current={currentPage}
+				total={filteredItems.length}
+				/>
+			</div>
+
 	}
 
-	{	todos?.items?.map((item,i) => {
+	
+	{	filteredItems?.slice(firstItemOfThePage, countPerPage*currentPage).map((item,i) => {
 
-	if(todos.itemsToShow === FILTER_STATE.all
-	|| todos.itemsToShow === FILTER_STATE.completed && item.achievement
-	|| todos.itemsToShow === FILTER_STATE.todo && !item.achievement 
-	) {
+		// WHEN you are editing some todo 
+		const editMode = editItems[item.id] || editItems[item.id] === ''
 
-	// WHEN you are editing some todo 
-	const editMode = editItems[item.id] || editItems[item.id] === ''
-	// WHen a task should be marked as completed
-	const isTaskCompleted = item.achievement && !editItems[item.id] 
+		return (
+			<ul className="todo-list-root" key={i}>
+				<motion.li
+					
+					className="todo-list-item-root"
+					data-completed={item.achievement}
+					layout
+					animate={{
+						y: [30, 0],
+						transition: {
+						duration: 0.3,
+						ease: 'easeOut',
+						}
+					}}>
 
-	return (
-		<div  
-			key={item.id}
-			// special color when editing ?
-			className={editMode ? "box" : "box"} 
-			style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
-			<span 
-				className={item.achievement ? "has-text-success" : ""} 
-				style={isTaskCompleted? { textDecoration: 'line-through'} : {}}>
-					{ editMode ?  
-						<input 
-							className="input" 
-							type="text" 
-							style={{ height: '100%', }}
-							value={editItems[item.id]}  
-							onChange={(e) => setEditItems({...editItems, [item.id]: e.target.value})}
-							/> : item.task }
-			</span>
-			<div className="icon-text">
-				<span className="icon has-text-success" onClick={() => handleDoneTask(item.id)}>
-					<i className={item.achievement ? "far fa-check-square" : "far fa-square"}></i>
-				</span>
-				<span className="icon has-text-warning" onClick={() => handleEdit(item.id, item.task, item.achievement)}>
-					<i className="fas fa-pen"></i>
-				</span>
-				<span className="icon has-text-danger" onClick={() => handleDelete(item.id)}>
-					<i className="fas fa-trash"></i>
-				</span>
-			</div>
-		</div>)}
-	})}
+					<div className="todo-list-item-primary-content">
 
-	{	todos?.items 
-	&&	todos.items.length > 0 
-	&&	<div className="columns">
-			<div className="column">
-				<button className="button is-danger is-fullwidth" onClick={() => handleDeleteDoneTasks()}>
-					  <span>Delete completed tasks</span>
-				</button>
-			</div>
-			<div className="column">
-				<button className="button is-danger is-fullwidth" onClick={() => clearList()}>
-					<span>Delete all tasks</span>
-				</button>
-			</div>
-		</div>
-	}
+						
+						<input
+							type="checkbox"
+							checked={item.achievement}
+							value={item.id}
+							onChange={e => handleDoneTask(e)}
+														
+						/>
+						<label 
+						className="todo-list-item-label"
+						>
+						{ editMode ? 
+							<input
+								className="edit-todo-box-input" 
+								style={{ width: spanWidth ,paddingLeft: 0}}
+								type="text" 
+								value={editItems[item.id]}  
+								onChange={(e) => {setEditItems({...editItems, [item.id]: e.target.value}); setSpanWidth(spanRef.current.offsetWidth) }}
+								
+								/> : <span ref={spanRef}>{item.task}</span>
+							}
+						</label>
+					</div>
+					<TodoListItemActionButtons 
+						item={item} 
+						todos={todos} 
+						setTodos={setTodos} 
+						analyseFetchResponseParams={{email, dispatch, APP_CONTEXT, history}}
+						editItems={editItems} 
+						setEditItems={setEditItems}
+						setNothingToRender={setNothingToRender}
+						setSpanWidth={setSpanWidth}
+						spanRef={spanRef}
+					/>
+				</motion.li></ul>)}
+				
+			)
+		}
+	
+	
 	</>
-
 }
-
-

@@ -5,29 +5,24 @@
  * @author FPC
  */
 
-import React, { Suspense, useState, useEffect, StrictMode, } from "react"
+import React, { Suspense, useState, useEffect, } from "react"
 import { AuthContextProvider } from './utils/contexts/authenticationContext'
-import {BrowserRouter, useLocation, } from 'react-router-dom'
+import {BrowserRouter, } from 'react-router-dom'
 import Header from './components/layout/header'
-import Footer from './components/layout/footer'
-import MiddleContainer from './components/containers/containers'
+import Container from './components/layout/containers'
 import { ErrorBoundary, } from "./components/sdk/toolBox-sdk-js"
 import Navigation from './components/routes/navigation'
+import {FaGithub} from 'react-icons/fa'
 
 class DebugRouter extends BrowserRouter {
 	constructor(props) {
 		super(props)
 
 		try {
-			// console.log('enter');
-			// console.log('url is ', location.pathname, 'history is: ', this.history)
 			this.history.listen((location,action) => {
-				// console.log(`this current url is ${location.pathname}${location.search}${location.hash}`)
 			})
 		}
 		finally{
-			// console.log('leave')
-
 		}
 	}
 }
@@ -77,14 +72,16 @@ function Layout() {
 			<ErrorBoundary>
 				<Header />
 			</ErrorBoundary>
-			<MiddleContainer>
-				<ErrorBoundary>
-					<Navigation />
-				</ErrorBoundary>
-			</MiddleContainer>
-			<ErrorBoundary>
-				<Footer />
-			</ErrorBoundary>
+			<main>
+				<Container>	
+					<ErrorBoundary>
+						<Navigation />
+					</ErrorBoundary>	
+				</Container>
+			</main>
+			<div className="footer">
+				<a href='https://github.com' target='_blank' rel="noopener noreferrer"><FaGithub className='github'/></a>
+			</div>
 		</ErrorBoundary>
 	</>
 }

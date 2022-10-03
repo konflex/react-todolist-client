@@ -1,9 +1,9 @@
-import ReactDOM from 'react-dom'
 import React, { StrictMode, } from 'react'
 import App from './App'
+import './mystyles.scss'
+import { createRoot } from 'react-dom/client'
 
-ReactDOM.render(
-	<StrictMode>
-		<App />
-	</StrictMode>, 
-document.getElementById('app'));
+const container = document.getElementById('app')
+const root = createRoot(container)
+
+root.render(<StrictMode><App /></StrictMode>)

@@ -11,6 +11,9 @@ import { useHistory, } from "react-router-dom"
 // == AuthContext 
 import { AuthContext, } from '../../utils/contexts/authenticationContext'
 import { APP_CONTEXT, } from '../../utils/reducers/authenticationReducer'
+import Container from './containers'
+// Plus icon
+import { ArrowRightIcon } from '@iconicicons/react'
 
 export default function Header() {
 
@@ -34,64 +37,26 @@ export default function Header() {
 
 		history.push('/signin')
 	}
-	
-	function handleClick () {
-		setIsActive(!isActive)
-	}
 
 	return(
-		<nav 
-			className="navbar is-fixed-top"
-			role="navigation" 
-			aria-label="main navigation">
-			<div className="navbar-brand">
-				<a className="navbar-item" href="/">
-					<h1 className="title">TODO's</h1>
-				</a>
-				{
-					// Mobile view: burger button
-				}
-				<a 	
-					role="button" 
-					className={`navbar-burger burger ${isActive ? 'is-active' : ''}`}
-					aria-label="menu"
-					onClick={handleClick} 
-					aria-expanded="false"
-					data-target="navbarBasicExample">
-						<span aria-hidden="true"></span>
-						<span aria-hidden="true"></span>
-						<span aria-hidden="true"></span>
-				</a>
-					
+		<header className="appbar-root">
+			<Container className="appbar-container">
+			<h1 className="appbar-title">
+				Todomatic
+			</h1>
+			{ isAuthenticated && 
+			<div className="large-button-root log-out-button-root">
+				<button
+					className="large-button log-out-button"
+
+					title="Log out"
+					onClick={handleLogOut}
+				>
+					<ArrowRightIcon />
+				</button>
 			</div>
-
-			<div id="navbarBasicExample" className={`navbar-menu ${isActive ? 'is-active' : ''}`}>
-				<div className="navbar-end">
-					<div className="navbar-item">
-						<div className="buttons">
-
-						{
-							isAuthenticated ? 
-						<button className="button is-danger" onClick={handleLogOut}>
-							<span className="icon is-small">
-							<i className="fas fa-sign-out-alt"></i>
-							</span>
-						</button>
-						:
-						<>
-						<a className="button is-link" href="/signup">
-							<strong>Sign up</strong>
-						</a>
-						<a className="button is-light"  href="/signin">
-							Login
-						</a>
-						</>
-						}
-
-						</div>
-					</div>
-				</div>
-			</div>
-			</nav>
+			}
+			</Container>
+	  	</header>
 	)
 }
