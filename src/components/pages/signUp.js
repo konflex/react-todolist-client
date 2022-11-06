@@ -9,20 +9,14 @@
 import React, { useContext, useEffect, useState, } from "react"
 //== React router dom 
 import { useHistory } from "react-router-dom"
-// == AuthContext 
-import { AuthContext } from '../../utils/contexts/authenticationContext'
-import { APP_CONTEXT, } from '../../utils/reducers/authenticationReducer'
 // == SDK
 import ToolBoxSdk from '../sdk/toolBox-sdk-js'
-import classNames from 'classnames'
 
 export default function SignUp() {
 
 	const history = useHistory()
 
-	const { state, dispatch } = useContext(AuthContext)
-
-	const [credential, setCredential] = useState({ username: '', email: '', password: '', confirmedPassword: '' })
+	const [credential, setCredential] = useState({ email: '', password: '', confirmedPassword: '' })
 
 	const [ errorMessage, setErrorMessage] = useState('')
 
@@ -36,7 +30,7 @@ export default function SignUp() {
 	// Check if password and confirmedPassword are the same and there is at least 1 character
 	const arePasswordsIdentical = ToolBoxSdk.arePasswordsIdentical(credential.password, credential.confirmedPassword) && credential.password.length > 0
 
-	const isSubmitEnable = isEmailAddressValid && arePasswordsIdentical && credential.username.length > 0
+	const isSubmitEnable = isEmailAddressValid && arePasswordsIdentical > 0
 
 	async function handleSubmit(e) {
 
@@ -48,91 +42,70 @@ export default function SignUp() {
 			return
 		}
 
-		const response = await ToolBoxSdk.api.signUp(credential.username,credential.email, credential.password)
+		const response = await ToolBoxSdk.api.signUp(credential.email, credential.password)
 
-		if(response.json && response.responseStatusCode === 400) {
+		if(response.json && response.responseStatusCode !== 200) {
 			setErrorMessage(response.message)
 		}
 
 		if(response.json && response.responseStatusCode === 200) {
 			setErrorMessage('')
 			alert('Account created')
+			setCredential({email: '', password: '', confirmedPassword: '' })
+			history.push('/signin')
 		}
 
 	}
-	
+
 	return(
-		<form className="box" onSubmit={(e) => handleSubmit	(e) }>
-		<h3 className="title has-text-centered is-4">Sign up</h3>
-		<div className="field">
-				<label className="label">Username</label>
-				<div className="control">
-				<input 
-					className="input" 
-					type="text" 
-					name="username"
-					placeholder="e.g. alex" 
-					onChange={handleChange}
+		<form className="landing-sign-in-up-container" onSubmit={(e) => handleSubmit(e) }>
+			<div className="sign-in-up-input-container"> 
+			<h2 style={{ margin: 0 }}>Sign up</h2>
+
+				<label className="sign-in-up-label-input">Email</label>
+				<div className="div styles-input" style={{ padding: 0, }}>
+					<input 					
+						className="input styled-input-icon-right"
+						type="email"
+						name="email" 
+						placeholder="e.g. alex@example.com" 
+						onChange={handleChange}
 					/>
-				</div>
-			</div>
-			<div className="field">
-				<label className="label">Email</label>
-				<div className="control">
-				<input
-					className={classNames("input", {
-						"is-danger": !isEmailAddressValid && credential.email.length !== 0
-					})} 
-					type="email" 
-					name="email"
-					placeholder="e.g. alex@example.com" 
-					onChange={handleChange}
-					/>
+					{ !isEmailAddressValid  && credential.email.length !== 0 && <i className="fa fa-times" aria-hidden="true"></i>}
+					{ isEmailAddressValid  && credential.email.length !== 0 && <i className="fa fa-check" aria-hidden="true"></i>}
+
 				</div>
 
-				{ !isEmailAddressValid  && credential.email.length !== 0 && <p className="help is-danger">This email address is not valid</p> }
 
-			</div>
-
-			<div className="field">
-				<label className="label">Password</label>
-				<div className="control">
+				<label className="sign-in-up-label-input">Password</label>
 				<input 
-					className={classNames("input", {
-						"is-danger": !arePasswordsIdentical && credential.password.length !== 0 
-					})} 
+					className="input styled-input"
 					type="password" 
 					name="password"
 					placeholder="Password" 
 					onChange={handleChange}
+				/>
+
+				<label className="sign-in-up-label-input">Confirm password</label>
+				<div className="div styles-input" style={{ padding: 0, }}>
+					<input 					
+						className="input styled-input-icon-right"
+						type="password"
+						name="confirmedPassword" 
+						placeholder="Confirm password" 
+						onChange={handleChange}
 					/>
+					{ !arePasswordsIdentical && (credential.password.length && credential.confirmedPassword.length) !== 0 && <i className="fa fa-times" aria-hidden="true"></i>}
+					{ arePasswordsIdentical && (credential.password.length && credential.confirmedPassword.length) !== 0 && <i className="fa fa-check" aria-hidden="true"></i>}
+
 				</div>
 
+				<button className="stackoverflow-button sign-in-up-button" role="button" disabled={!isSubmitEnable} type="submit" >Sign up&nbsp;<i className="fa fa-sign-in" aria-hidden="true"></i></button>
 				
-				{ !arePasswordsIdentical && credential.password.length !== 0 && <p className="help is-danger">Password must be the same</p> }
-
+				<a href="/signin" style={{ color: "white" }}>Already have an account ?</a>
+				{ errorMessage && <p className="input-error" style={{ textAlign: 'center', }}>{errorMessage} </p> }
 
 			</div>
-			<div className="field">
-				<label className="label">Confirm password</label>
-				<div className="control">
-				<input 
-					className="input" 
-					type="password"
-					name="confirmedPassword" 
-					placeholder="Confirm password" 
-					onChange={handleChange}
-					/>
-				</div>
-			</div>
-			<button href="#" className="button is-block is-link is-fullwidth" disabled={!isSubmitEnable} type="submit" >Sign up&nbsp;<i className="fa fa-sign-in" aria-hidden="true"></i></button>
-
-			{ errorMessage && <p className="help is-danger">{errorMessage} </p> }
-
-			<p className="has-text-grey mt-2">
-				<a href="/signin">Already have an account ?</a>
-            </p>
-
 		</form>
 	)
-}
+}	

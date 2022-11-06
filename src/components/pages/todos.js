@@ -68,8 +68,6 @@ export default function Todos() {
 	const [activeFilter, setActiveFilter] = useState(FILTER_STATE.all)
 	// nothingToRender on the page
 	const [nothingToRender, setNothingToRender] = useState(false)
-	// input width 
-	const [editWidth, setEditWidth] = useState(0)
 
 	async function handleDoneTask (e) {
 
@@ -243,7 +241,6 @@ export default function Todos() {
 
 
 	const spanRef = useRef()
-	const [spanWidth, setSpanWidth] = useState(0)
 
 	return <>
 
@@ -312,16 +309,19 @@ export default function Todos() {
 						<label 
 						className="todo-list-item-label"
 						>
+
 						{ editMode ? 
 							<input
 								className="edit-todo-box-input" 
-								style={{ width: spanWidth ,paddingLeft: 0}}
+								style={{ paddingLeft: 0}}
 								type="text" 
 								value={editItems[item.id]}  
-								onChange={(e) => {setEditItems({...editItems, [item.id]: e.target.value}); setSpanWidth(spanRef.current.offsetWidth) }}
+								onChange={(e) => {setEditItems({...editItems, [item.id]: e.target.value}); }}
 								
-								/> : <span ref={spanRef}>{item.task}</span>
+								/> : <span>{item.task}</span>
 							}
+
+							{/* {console.log(spanWidth, spanRef?.current?.offsetWidth)} */}
 						</label>
 					</div>
 					<TodoListItemActionButtons 
@@ -332,8 +332,8 @@ export default function Todos() {
 						editItems={editItems} 
 						setEditItems={setEditItems}
 						setNothingToRender={setNothingToRender}
-						setSpanWidth={setSpanWidth}
-						spanRef={spanRef}
+						// setSpanWidth={setSpanWidth}
+						spanRef={spanRef?.current?.offsetWidth}
 					/>
 				</motion.li></ul>)}
 				

@@ -14,8 +14,7 @@ $edit-todo-green: #32DE8A;
 // $color-red-pink: #941C2F;
 $color-red-pink: #2279db;
 
-
-
+// Other colors
 $placeholder-color: rgba(255, 255, 255, 0.3);
 $border-color-black: rgba(255, 255, 255, 0.1);
 $box-shadow-focus-blue: rgba(34, 121, 219, 0.25);
@@ -23,14 +22,19 @@ $box-shadow-focus-red: rgba(239, 83, 80, 0.25);
 $tab-item-main-bg:rgba(255, 255, 255, 0.05);
 $tab-item-list-black:rgba(255, 255, 255, 0.2);
 $add-todo-bg: rgba(255, 255, 255, 0.025);
-// Dimension
-$vertical-margin: 1.5em;
+
+
+// Dimensions
+$vertical-margin: 2vh;
+$content-height-size: 85vh;
 $vertical-padding: 0.5em;
 $horizontal-padding: 1em;
 $tab-bottom-decoration-size: 0.3em;
 $checkbox-size: 1.5em;
 $action-button-size: 2.5em;
 $button-padding-size: 0.3em;
+
+
 
 body {
   margin: 0;
@@ -47,7 +51,15 @@ body {
 main {
   margin-top: $vertical-margin;
   margin-bottom: $vertical-margin;
-  height: calc(100vh - 11.5rem);
+  height: $content-height-size;
+
+
+  //max-height: $content-height-size;
+
+  // doesn't work for all sizes screen
+  // height: calc(100vh - 11.5rem);
+
+
 }
 
 // persistent-header style
@@ -64,8 +76,7 @@ main {
 }
 
 // input style
-input.styled-input {
-  width: calc(100% - ($horizontal-padding) * 2);
+input.styled-input, div.styles-input {
   padding: $vertical-padding $horizontal-padding;
   font: inherit;
   color: $color-fg;
@@ -76,11 +87,24 @@ input.styled-input {
   transition: all 250ms ease;
 }
 
-input.styled-input:hover {
+input.styled-input-icon-right {
+	padding: $vertical-padding $horizontal-padding;
+	font: inherit;
+	color: $color-fg;
+	outline: none;
+	width: 90%; 
+	background-color: transparent; 
+	border-radius: 0em; 
+	border: none; 
+}
+
+input.styled-input:hover,
+div.styles-input:hover {
   border-color: $tab-item-list-black;
 }
-  
-input.styled-input:focus {
+
+input.styled-input:focus,
+div.styles-input:focus-within {
   border-color: $color-accent;
   box-shadow: 0 0 1.5em $box-shadow-focus-blue;
 }
@@ -93,6 +117,7 @@ input.styled-input:focus {
   max-width: 900px;
   margin-left: auto;
   margin-right: auto;
+  height: 100%;
 }
 
 header.appbar-root {
@@ -101,9 +126,9 @@ header.appbar-root {
   position: sticky;
   top: 0;
   z-index: 1200;
-  height: 5.5rem;
+  height:  5.5rem; // 11vh;
 }
-  
+
 .appbar-container {
   display: flex;
   flex-direction: row;
@@ -144,23 +169,23 @@ header.appbar-root {
 /* @src: https://github.com/Melvin-Abraham/Google-Assistant-Unofficial-Desktop-Client/blob/master/app/src/style.css#L1032 */
 @keyframes shake {
   0% {
-    transform: translateX(-5px);
+	transform: translateX(-5px);
   }
 
   25% {
-    transform: translateX(5px);
+	transform: translateX(5px);
   }
 
   50% {
-    transform: translateX(-2px);
+	transform: translateX(-2px);
   }
 
   75% {
-    transform: translateX(2px);
+	transform: translateX(2px);
   }
 
   100% {
-    transform: translateX(0px);
+	transform: translateX(0px);
   }
 }
   
@@ -478,12 +503,9 @@ input[type=checkbox]:active {
 
 // Footer
 .footer {
-  position: inherit;
-  // width: 100%;
-  text-align: center;
-  margin: 10px auto;
-  bottom: 0;
-  height: 2rem;
+    position: fixed;
+    bottom: 10px;
+    left: 50vw;
 }
 
 .github {
@@ -665,3 +687,81 @@ $rc-pagination-input-height: 20px;
 }
 
 // = END PAGER
+
+
+
+//<button className="stackoverflow-button" role="button">Button 7</button>
+
+/* Stackoverflow button */
+.stackoverflow-button {
+  background-color: $color-accent;
+  border: 1px solid transparent;
+  border-radius: 3px;
+  box-shadow: $placeholder-color 0 1px 0 0 inset;
+  box-sizing: border-box;
+  color: $color-fg;
+  cursor: pointer;
+  display: inline-block;
+  // font-family: -apple-system,system-ui,"Segoe UI","Liberation Sans",sans-serif;
+  // font-size: 13px;
+  // font-weight: 400;
+  font-size: 1rem;
+  line-height: 1.15385;
+  margin: 0;
+  outline: none;
+  padding: 8px .8em;
+  position: relative;
+  text-align: center;
+  text-decoration: none;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+  vertical-align: baseline;
+  white-space: nowrap;
+}
+
+.stackoverflow-button:hover,
+.stackoverflow-button:focus {
+  background-color: #07c;
+}
+
+.stackoverflow-button:focus {
+  box-shadow: 0 0 0 4px rgba(0, 149, 255, .15);
+}
+
+.stackoverflow-button:active {
+  background-color: #0064bd;
+  box-shadow: none;
+}
+
+.stackoverflow-button-container {
+  display: flex;
+  flex-direction: row;
+}
+
+.landing-sign-in-up-container {
+  margin: 0vh 8vw;
+  height: 100%;
+  display: grid;
+  align-content: center;
+}
+
+.sign-in-up-input-container {
+	display: grid;
+}
+
+.sign-in-up-label-input {
+	margin: 20px 0 10px;
+}
+
+.sign-in-up-button {
+	margin: 20px 0;
+}
+
+.fa-times,
+.input-error {
+	color: $color-error;
+}
+.fa-check {
+	color: $edit-todo-green;
+}

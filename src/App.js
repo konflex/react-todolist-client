@@ -77,11 +77,11 @@ function Layout() {
 					<ErrorBoundary>
 						<Navigation />
 					</ErrorBoundary>	
+					<div className="footer">
+						<a href='https://github.com/konflex' target='_blank' rel="noopener noreferrer"><FaGithub className='github'/></a>
+					</div>
 				</Container>
 			</main>
-			<div className="footer">
-				<a href='https://github.com' target='_blank' rel="noopener noreferrer"><FaGithub className='github'/></a>
-			</div>
 		</ErrorBoundary>
 	</>
 }

@@ -42,7 +42,7 @@ export default function Header() {
 		<header className="appbar-root">
 			<Container className="appbar-container">
 			<h1 className="appbar-title">
-				Todomatic
+				<a href="/" style={{ textDecoration: "none" ,color: "white", }}>Konflxomatic</a>
 			</h1>
 			{ isAuthenticated && 
 			<div className="large-button-root log-out-button-root">

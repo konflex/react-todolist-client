@@ -76,11 +76,8 @@ async function handleEdit({ itemToModify, todos, setTodos, analyseFetchResponseP
   const {id, task, achievement} = itemToModify
 
 
-  setSpanWidth(spanRef.current.offsetWidth)
-
+  console.log(spanRef)
   if(editItems[id]) {
-
-
 
     let updateTask = await ToolBoxSdk.api.updateTask(id, editItems[id], achievement)
 

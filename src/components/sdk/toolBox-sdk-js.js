@@ -45,8 +45,8 @@ let ToolBoxSdk = {
 	arePasswordsIdentical(password, confirmPassword) {
 		return password === confirmPassword 
 	},
-
-	countPerPage: 7
+	// TODO: change this value with the size of the screen
+	countPerPage: 5
 
 }
 
@@ -166,14 +166,13 @@ class API extends CoreSDK {
 	 * @returns The fetch promise
 	 * @throws 401 error whenever the user is unknown
 	*/
-	signUp(username, email, password) {
+	signUp(email, password) {
 		return this.apiCall(`${ApiHeader}/api/auth/signup`, {
 			params: {
 				method: 'POST',
 				credentials: 'include',
 				headers: this.headers(),
 				body: JSON.stringify({
-					username: username,
 					email: email,
 					password: password,
 				}),
