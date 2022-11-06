@@ -10,7 +10,7 @@
     "testDev": "webpack-dev-server --https"
   },
   "keywords": [],
-  "author": "",
+  "author": "konflex",
   "license": "ISC",
   "devDependencies": {
     "@babel/core": "^7.15.8",
