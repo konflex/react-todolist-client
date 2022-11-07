@@ -1,0 +1,9 @@
+.env
+/node_modules
+/dist
+doc.txt
+server.key
+server.crt
+todo.key
+todo.crt
+.vercel

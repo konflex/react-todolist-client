@@ -1,0 +1,769 @@
+@charset "utf-8";
+
+// Import a Google Font
+@import url('https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap');
+
+
+// Colors
+$color-bg: #121212;
+$color-fg: #ffffff;
+$color-accent: #2279db;
+$color-on-accent: #090909;
+$color-error: #ef5350;
+$edit-todo-green: #32DE8A;
+// $color-red-pink: #941C2F;
+$color-red-pink: #2279db;
+
+// Other colors
+$placeholder-color: rgba(255, 255, 255, 0.3);
+$border-color-black: rgba(255, 255, 255, 0.1);
+$box-shadow-focus-blue: rgba(34, 121, 219, 0.25);
+$box-shadow-focus-red: rgba(239, 83, 80, 0.25);
+$tab-item-main-bg:rgba(255, 255, 255, 0.05);
+$tab-item-list-black:rgba(255, 255, 255, 0.2);
+$add-todo-bg: rgba(255, 255, 255, 0.025);
+
+
+// Dimensions
+$vertical-margin: 2vh;
+$content-height-size: 85vh;
+$vertical-padding: 0.5em;
+$horizontal-padding: 1em;
+$tab-bottom-decoration-size: 0.3em;
+$checkbox-size: 1.5em;
+$action-button-size: 2.5em;
+$button-padding-size: 0.3em;
+
+
+
+body {
+  margin: 0;
+  background-color: $color-bg;
+  color: $color-fg;
+  font-family: 'Space Mono', 'Segoe UI', 'Ubuntu', 'Source Sans Pro', 'monospace';
+  box-sizing: border-box;
+}
+
+#app {
+  min-height: 100vh;
+}
+
+main {
+  margin-top: $vertical-margin;
+  margin-bottom: $vertical-margin;
+  height: $content-height-size;
+
+
+  //max-height: $content-height-size;
+
+  // doesn't work for all sizes screen
+  // height: calc(100vh - 11.5rem);
+
+
+}
+
+// persistent-header style
+.persistent-header {
+  position: -webkit-sticky;
+  position: sticky;
+  top: 0;
+  left: 0;
+  background-color: $color-bg;
+  display: flex;
+  flex-direction: column;
+  gap: 1em;
+  z-index: 2;
+}
+
+// input style
+input.styled-input, div.styles-input {
+  padding: $vertical-padding $horizontal-padding;
+  font: inherit;
+  color: $color-fg;
+  background-color: $tab-item-main-bg;
+  border: 2px solid $border-color-black;
+  outline: none;
+  border-radius: 0.5em;
+  transition: all 250ms ease;
+}
+
+input.styled-input-icon-right {
+	padding: $vertical-padding $horizontal-padding;
+	font: inherit;
+	color: $color-fg;
+	outline: none;
+	width: 90%; 
+	background-color: transparent; 
+	border-radius: 0em; 
+	border: none; 
+}
+
+input.styled-input:hover,
+div.styles-input:hover {
+  border-color: $tab-item-list-black;
+}
+
+input.styled-input:focus,
+div.styles-input:focus-within {
+  border-color: $color-accent;
+  box-shadow: 0 0 1.5em $box-shadow-focus-blue;
+}
+
+
+// Container style
+.container {
+  padding-left: 2em;
+  padding-right: 2em;
+  max-width: 900px;
+  margin-left: auto;
+  margin-right: auto;
+  height: 100%;
+}
+
+header.appbar-root {
+  border-bottom: 2px solid $tab-item-list-black;
+  background-color: $color-bg;
+  position: sticky;
+  top: 0;
+  z-index: 1200;
+  height:  5.5rem; // 11vh;
+}
+
+.appbar-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+
+
+// AddToDoInput style
+
+.add-todo-box-root {  
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  background-color: $add-todo-bg;
+  border: 2px solid $border-color-black;
+  border-radius: 0.5em;
+  transition: all 250ms ease;
+  gap: 1em;
+  padding: $button-padding-size;
+}
+
+.add-todo-box-root:hover {
+  border-color: $tab-item-list-black;
+}
+  
+.add-todo-box-root[data-active=true] {
+  border-color: $color-accent;
+  box-shadow: 0 0 1.5em $box-shadow-focus-blue;
+}
+  
+.add-todo-box-root[data-error=true] {
+  border-color: $color-error;
+  box-shadow: 0 0 1.5em $box-shadow-focus-red;
+  animation: shake 300ms forwards;
+}
+  
+/* @src: https://github.com/Melvin-Abraham/Google-Assistant-Unofficial-Desktop-Client/blob/master/app/src/style.css#L1032 */
+@keyframes shake {
+  0% {
+	transform: translateX(-5px);
+  }
+
+  25% {
+	transform: translateX(5px);
+  }
+
+  50% {
+	transform: translateX(-2px);
+  }
+
+  75% {
+	transform: translateX(2px);
+  }
+
+  100% {
+	transform: translateX(0px);
+  }
+}
+  
+
+.add-todo-box-leading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-left: 1em;
+  font-size: 1.2em;
+  color: $placeholder-color;
+}
+
+.add-todo-box-root[data-active=true] > .add-todo-box-leading {
+  color: $color-accent;
+  font-weight: bold;
+}
+  
+.add-todo-box-root[data-error=true] > .add-todo-box-leading {
+  color: $color-error;
+}
+  
+ 
+.add-todo-box-input {
+  flex-grow: 1;
+  height: 2em;
+  background-color: transparent;
+  color: $color-fg;
+  outline: none;
+  border: none;
+  font: inherit;
+  caret-color: $color-accent;
+}
+
+.edit-todo-box-input {
+  flex-grow: 1;
+  height: 2em;
+  background-color: transparent;
+  color: $color-fg; 
+  outline: none;
+  border: none;
+  font: inherit;
+  caret-color: $color-accent;
+}
+
+.add-todo-box-input::placeholder {
+  color: $placeholder-color;
+}
+  
+.add-todo-box-root[data-error=true] .add-todo-box-input {
+  caret-color: $color-error;
+}
+  
+
+
+// large-button style
+.large-button-root {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+  
+.large-button {
+  cursor: pointer;
+  height: 3.5em;
+  width: 3.5em;
+  font: inherit;
+  color: $color-fg;
+  border: none;
+  outline: none;
+  border-radius: 0.3rem;
+  transition: all 250ms ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: $color-accent;
+}
+
+.large-button:focus-visible {
+  transform: scale(1.1);
+}
+  
+.large-button:hover {
+  opacity: 0.9;
+}
+
+.large-button:active {
+  opacity: 0.7;
+  background-color: $color-accent;
+}
+
+.large-button:disabled {
+  cursor: default;
+  background-color: $tab-item-list-black;
+}
+
+// add-todo-button
+.add-todo-button {
+  background-color: $color-accent;
+}
+
+// Log out button style
+.log-out-button-root {
+  padding: $button-padding-size;
+}
+
+.log-out-button {
+  background-color: $color-red-pink;
+}
+
+// Tab-groupe-root
+.tab-group-root {
+  padding: 0;
+  display: flex;
+  flex-direction: row;
+  gap: 0.2em;
+  background-color: $color-bg;
+  overflow: auto;
+}
+
+// TabItem style 
+.tab-item-root {
+  list-style-type: none;
+  width: 100%;
+}
+  
+.tab-item-main {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1em;
+  padding: 1.2em;
+  width: 100%;
+  background-color: transparent;
+  border: 2px solid transparent;
+  outline: none;
+  font: inherit;
+  color: $color-fg;
+  border-radius: 0.5em;
+  cursor: pointer;
+  overflow: hidden;
+  transition: all 250ms ease;
+}
+  
+.tab-item-main:hover {
+  background-color: $tab-item-main-bg;
+}
+  
+.tab-item-main:focus-visible {
+  border: 2px solid $placeholder-color;
+  background-color: $tab-item-main-bg;
+  font-weight: bold;
+}
+  
+.tab-item-main::before {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 5%;
+  right: 5%;
+  background-color: $color-accent;
+  height: $tab-bottom-decoration-size;
+  width: 90%;
+  border-top-left-radius: 2em;
+  border-top-right-radius: 2em;
+  transform: translateY(0.3em);
+  transition: all 250ms ease;
+}
+  
+.tab-item-root[data-active=true] .tab-item-main::before {
+  transform: translateY(0);
+}
+
+// Todo-list-root
+.todo-list-root {
+  padding: 0;
+}
+
+
+// Todo-list-item
+.todo-list-item-root {
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  border: 1px solid $tab-item-list-black;
+  padding: 0.6em 0.6em 0.6em 1em;
+  margin-top: 0.5em;
+  gap: 0.5em;
+  border-radius: 0.5em;
+}
+  
+.todo-list-item-primary-content {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 1em;
+}
+
+  
+input[type=checkbox] {
+  appearance: none;
+  background-color: $tab-item-list-black;
+  height: $checkbox-size;
+  width: $checkbox-size;
+  border-radius: 0.3em;
+  flex-shrink: 0;
+  transition: all 250ms ease;
+}
+  
+input[type=checkbox]:checked {
+  background-color: $color-accent;
+}
+  
+input[type=checkbox]:hover {
+  transform: scale(1.15);
+  opacity: 0.8;
+}
+  
+input[type=checkbox]:active {
+  transform: scale(1.15);
+  opacity: 0.5;
+}
+  
+.todo-list-item-label {
+  overflow-x: hidden;
+  overflow-wrap: break-word;
+  transition: all 250ms ease;
+  position: relative;
+}
+ 
+.todo-list-item-label::before {
+  content: '';
+  display: inline-block;
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  height: 1px;
+  width: 0;
+  background-color: rgba(255, 255, 255, 1);
+  transition: all 500ms ease;
+}
+  
+.todo-list-item-root[data-completed=true] .todo-list-item-label {
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.todo-list-item-root[data-completed=true] .todo-list-item-label::before {
+  width: 100%;
+  background-color: rgba(255, 255, 255, 0.4);
+}
+
+
+.todo-list-item-actions-group {
+  display: flex;
+  flex-direction: row;
+  gap: 0.5em;
+  z-index: 1;
+}
+
+
+// todoListItemActionButton style
+.todo-list-item-button {
+  cursor: pointer;
+  height: $action-button-size;
+  width: $action-button-size;
+  background-color: $border-color-black;
+  font: inherit;
+  color: $color-fg;
+  border: none;
+  outline: none;
+  border-radius: 0.3rem;
+  transition: all 250ms ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.todo-list-item-button:focus-visible {
+  transform: scale(1.1);
+  box-shadow: 0 0 0 3px $placeholder-color;
+}
+  
+.todo-list-item-button:hover {
+  opacity: 0.9;
+  background-color: $color-accent; 
+}
+
+// todoListEmptyState style
+.todo-list-empty-state-root {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 50vh;
+  text-align: center;
+}
+
+.todo-list-empty-state-illustration {
+  opacity: 0.3;
+  font-size: clamp(1rem, 6rem, 15vw);
+}
+
+.todo-list-empty-state-heading {
+  margin-top: 2em;
+  margin-bottom: 0;
+}
+
+.todo-list-empty-state-details {
+  opacity: 0.6;
+}
+
+// Footer
+.footer {
+    position: fixed;
+    bottom: 10px;
+    left: 50vw;
+}
+
+// test
+
+.github {
+	font-size: 2rem;
+	color: $color-fg;
+}
+
+// Delete-tasks-button
+.delete-tasks-button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: transparent;
+  border: none;
+  color:rgba(255, 255, 255, 1);
+  // color: #32DE8A;
+  // color: #136F63;
+  // color: #F03A47;
+  border:1px solid rgba(255, 255, 255, 1);
+  outline: none;
+  border-radius: 0.3em;
+  cursor: pointer;
+  font-size: 1em;
+}
+.delete-tasks-button:hover {
+  // color: #32DE8A;
+  // color: #136F63;
+  color: #F03A47;
+  cursor: pointer;
+  border:1px solid #F03A47;
+  outline: none;
+  border-radius: 0.3em;
+}
+
+
+
+/// PAGER
+$rc-pagination-arrow-font-size: 22px;
+$rc-pagination-right-text-font-size: 14px;
+$rc-pagination-input-height: 20px;
+
+//KEEP IT 
+.rc-pagination {
+  margin: 0;
+  padding: 0;
+  font-size: $rc-pagination-right-text-font-size;    // FONT SIZE of / page number item 
+  display: flex;
+  align-items: center;
+}
+.rc-pagination ul,
+.rc-pagination ol {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.rc-pagination::after {
+  display: block;
+  clear: both;
+  height: 0;
+  overflow: hidden;
+  visibility: hidden;
+  content: ' ';
+}
+
+// prev and next button
+.rc-pagination-prev {
+  margin-right: 8px;
+}
+.rc-pagination-prev,
+.rc-pagination-next{
+  display: inline-block;
+  min-width: 28px;
+  height: 28px;
+  text-align: center;
+  vertical-align: middle;
+  list-style: none;
+  border-radius: 2px;
+}
+
+.rc-pagination-prev:hover,
+.rc-pagination-next:hover {
+  border-color: $color-accent;
+  box-shadow: 0 0 .4em $box-shadow-focus-blue;
+}
+
+.rc-pagination-simple .rc-pagination-prev .rc-pagination-item-link,
+.rc-pagination-simple .rc-pagination-next .rc-pagination-item-link {
+  background-color: transparent;
+  border: 0;
+  color: $color-fg;
+}
+
+.rc-pagination-simple .rc-pagination-prev .rc-pagination-item-link:hover,
+.rc-pagination-simple .rc-pagination-next .rc-pagination-item-link:hover {
+  color: $color-accent;
+}
+
+.rc-pagination-simple .rc-pagination-prev .rc-pagination-item-link::after,
+.rc-pagination-simple .rc-pagination-next .rc-pagination-item-link::after {
+  height: $rc-pagination-input-height;
+  line-height: $rc-pagination-input-height;
+}
+
+.rc-pagination-simple .rc-pagination-prev,
+.rc-pagination-simple .rc-pagination-next {
+  vertical-align: top;
+  font: inherit;
+  color: $color-fg;
+  border: 2px solid $border-color-black;
+  outline: none;
+  border-radius: 0.5em;
+  transition: all 250ms ease;
+}
+.rc-pagination-simple .rc-pagination-prev:hover,
+.rc-pagination-simple .rc-pagination-next:hover {
+  border: 2px solid $color-accent;
+}
+
+.rc-pagination-prev button,
+.rc-pagination-next button {
+  user-select: none;
+}
+
+.rc-pagination-prev .rc-pagination-item-link,
+.rc-pagination-next .rc-pagination-item-link {
+  display: block;
+  width: 100%;
+  height: 100%;
+  font-size: $rc-pagination-arrow-font-size;
+  text-align: center;
+  border-radius: 2px;
+  outline: none;
+  transition: all 0.3s;
+}
+
+.rc-pagination-prev button:after {
+  content: '‹';
+  display: block;
+}
+.rc-pagination-next button:after {
+  content: '›';
+  display: block;
+}
+.rc-pagination-disabled,
+.rc-pagination-disabled:hover,
+.rc-pagination-disabled:focus {
+  cursor: not-allowed;
+}
+.rc-pagination-disabled .rc-pagination-item-link,
+.rc-pagination-disabled:hover .rc-pagination-item-link,
+.rc-pagination-disabled:focus .rc-pagination-item-link {
+  cursor: not-allowed;
+}
+.rc-pagination-slash {
+  margin: 0 10px 0 5px;
+}
+
+.rc-pagination-simple .rc-pagination-simple-pager {
+  display: inline-block;
+  height: $rc-pagination-input-height;
+  margin-right: 8px;
+}
+
+// pager input box
+.rc-pagination-simple .rc-pagination-simple-pager input {
+  box-sizing: border-box;
+  margin-right: 0px;
+  text-align: center;
+  background-color: transparent;
+  border: 2px solid $border-color-black;
+  color: $color-fg;
+  border-radius: 2px;
+  outline: none;
+  transition: border-color 0.3s;
+  width: 2rem;
+}
+.rc-pagination-simple .rc-pagination-simple-pager input:hover {
+  border-color: $color-accent;
+}
+
+// = END PAGER
+
+
+
+//<button className="stackoverflow-button" role="button">Button 7</button>
+
+/* Stackoverflow button */
+.stackoverflow-button {
+  background-color: $color-accent;
+  border: 1px solid transparent;
+  border-radius: 3px;
+  box-shadow: $placeholder-color 0 1px 0 0 inset;
+  box-sizing: border-box;
+  color: $color-fg;
+  cursor: pointer;
+  display: inline-block;
+  // font-family: -apple-system,system-ui,"Segoe UI","Liberation Sans",sans-serif;
+  // font-size: 13px;
+  // font-weight: 400;
+  font-size: 1rem;
+  line-height: 1.15385;
+  margin: 0;
+  outline: none;
+  padding: 8px .8em;
+  position: relative;
+  text-align: center;
+  text-decoration: none;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+  vertical-align: baseline;
+  white-space: nowrap;
+}
+
+.stackoverflow-button:hover,
+.stackoverflow-button:focus {
+  background-color: #07c;
+}
+
+.stackoverflow-button:focus {
+  box-shadow: 0 0 0 4px rgba(0, 149, 255, .15);
+}
+
+.stackoverflow-button:active {
+  background-color: #0064bd;
+  box-shadow: none;
+}
+
+.stackoverflow-button-container {
+  display: flex;
+  flex-direction: row;
+}
+
+.landing-sign-in-up-container {
+  margin: 0vh 8vw;
+  height: 100%;
+  display: grid;
+  align-content: center;
+}
+
+.sign-in-up-input-container {
+	display: grid;
+}
+
+.sign-in-up-label-input {
+	margin: 20px 0 10px;
+}
+
+.sign-in-up-button {
+	margin: 20px 0;
+}
+
+.fa-times,
+.input-error {
+	color: $color-error;
+}
+.fa-check {
+	color: $edit-todo-green;
+}
