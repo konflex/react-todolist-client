@@ -6,3 +6,4 @@ server.key
 server.crt
 todo.key
 todo.crt
+.vercel
