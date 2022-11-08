@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "echo 'Building webpack dist folder' && rm -rf dist && webpack --mode production --env production",
+    "build": "echo 'Remove dist' && rm -rf dist && echo 'install webpack' && npm i webpack --save-dev && webpack --mode production --env production",
     "dev": "webpack serve --config webpack.config.js",
     "testDev": "webpack-dev-server --https"
   },
