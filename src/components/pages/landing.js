@@ -13,10 +13,10 @@
 			<p className="">Yet another place where you can store tasks you have to do. To start you need to log in or create an account if you havn't one already.</p>
 			<br/>
 			<div className="stackoverflow-button-container">
-				{/* <form action="/signup" style={{ marginRight: '10px' }}> */}
-					<button className="stackoverflow-button" role="button"><a href="/signup">Create an account</a></button>
-				{/* </form> */}
-				<form action="/signin">                
+				<form action="/signup" style={{ marginRight: '10px' }}>
+					<button className="stackoverflow-button" role="button">Create an account</button>
+				</form>
+				<form action="/signin">
 					<button className="stackoverflow-button" role="button" >Login</button>
 				</form>
 			</div>
