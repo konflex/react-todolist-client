@@ -17,9 +17,9 @@ import ToolBoxSdk from '../sdk/toolBox-sdk-js'
 import { AuthContext } from '../../utils/contexts/authenticationContext'
 import { APP_CONTEXT, } from '../../utils/reducers/authenticationReducer'
 // AddToDoInput component
-import AddToDoInput from '../layout/AddToDoInput'
+import AddToDoInput from '../layout/addToDoInput'
 // TabItems component
-import TabItems from "../layout/tabItems"
+import TabItems from "../layout/tabItems.js"
 // framer-motion
 import { motion } from 'framer-motion'
 // TodoListItemActionButton 
