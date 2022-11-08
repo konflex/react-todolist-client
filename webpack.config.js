@@ -18,7 +18,7 @@ const htmlPlugin = new HtmlWebPackPlugin({
 	hash: true,
 })
 
-const serverOptions = process.env.NODE_ENV == "development" && process.env.NODE_ENV == "true" ? 
+const serverOptions = process.env.NODE_ENV == "development" && process.env.RUN_PRODUCTION_SERVER == "true" ? 
 {
 	type: 'https',
 	options: {
@@ -33,7 +33,7 @@ module.exports = env => {
 
 		server: serverOptions,
 		host: process.env.NODE_ENV == "development" && 
-			  process.env.NODE_ENV == "true" ? process.env.HOST : 'localhost',
+			  process.env.RUN_PRODUCTION_SERVER == "true" ? process.env.HOST : 'localhost',
 		port: 8080,
 
 		client: {
