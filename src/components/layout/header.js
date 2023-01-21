@@ -41,10 +41,11 @@ export default function Header() {
 
 	return(
 		<header className="appbar-root">
-			<Container className="appbar-container">
+			<div className="container appbar-container">
 			<h1 className="appbar-title">
 				<a href="/" style={{ textDecoration: "none" ,color: "white", }}>Konflxomatic</a>
 			</h1>
+			
 			{ isAuthenticated && 
 			<div className="large-button-root log-out-button-root">
 				<button
@@ -57,7 +58,7 @@ export default function Header() {
 				</button>
 			</div>
 			}
-			</Container>
+			</div>
 	  	</header>
 	)
 }

@@ -21,6 +21,8 @@ const FILTER_STATE = ToolBoxSdk.api.FILTER_STATE
  */
 export default function TabItems({ todos, setFilteredItems, activeFilter, setActiveFilter, }) {
 
+	const { width } = ToolBoxSdk.useWindowDimensions();
+
     const todosList = todos?.items
 
     const tabItems = [
@@ -68,7 +70,7 @@ export default function TabItems({ todos, setFilteredItems, activeFilter, setAct
         setFilteredItems(filteredTodoList)
 
     }, [todos,activeFilter])
-
+	
     return(
         <ul className="tab-group-root">
         {
@@ -81,7 +83,7 @@ export default function TabItems({ todos, setFilteredItems, activeFilter, setAct
                         aria-label={ariaLabel}
                     >
                         { LeadingIcon }
-                        { label }
+                        { width > 440 && label }
                     </button>
                 </li>)
                 )

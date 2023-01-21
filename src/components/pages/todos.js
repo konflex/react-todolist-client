@@ -29,17 +29,15 @@ import TodoListEmptyState from "../layout/todoListEmptyState"
 // Icons 
 import { CheckIcon, TrashIcon, } from '@iconicicons/react'
 // Pagination component
-import Pagination from "rc-pagination"
-
+// import Pagination from "rc-pagination"
+import Container from "../layout/containers"
 
 const FILTER_STATE = ToolBoxSdk.api.FILTER_STATE
-const countPerPage = ToolBoxSdk.countPerPage
 
 export default function Todos() {
-	// Number of elements per page
-	// const countPerPage = 7
-	// current page number
-	const [currentPage, setCurrentPage] = React.useState(1)
+
+	// const countPerPage = ToolBoxSdk.countPerPage
+	// const [currentPage, setCurrentPage] = React.useState(1)
 
 	const history = useHistory()
 	const { state, dispatch, } = useContext(AuthContext)
@@ -114,69 +112,69 @@ export default function Todos() {
 		})
 	}
 
-	async function handleDeleteDoneTasks() {
+	// async function handleDeleteDoneTasks() {
 
-		const filteredItems = todos.items.filter(item => item.achievement === false)
+	// 	const filteredItems = todos.items.filter(item => item.achievement === false)
 
-		const response = await ToolBoxSdk.api.deleteManyTasks({email: email , achievement: true,})
+	// 	const response = await ToolBoxSdk.api.deleteManyTasks({email: email , achievement: true,})
 
-		// check response status code
-		const shouldSignIn = await ToolBoxSdk.api.analyseFetchResponse(
-			response, 
-			email, 
-			history, dispatch, APP_CONTEXT)
+	// 	// check response status code
+	// 	const shouldSignIn = await ToolBoxSdk.api.analyseFetchResponse(
+	// 		response, 
+	// 		email, 
+	// 		history, dispatch, APP_CONTEXT)
 
-		if(shouldSignIn >= 1) {
+	// 	if(shouldSignIn >= 1) {
 
-			// accessToken needs to be renew and retry the fetch call
-			if(shouldSignIn == 1) {
-				response = await ToolBoxSdk.api.deleteManyTasks({email: email , achievement: true,})
-			}
+	// 		// accessToken needs to be renew and retry the fetch call
+	// 		if(shouldSignIn == 1) {
+	// 			response = await ToolBoxSdk.api.deleteManyTasks({email: email , achievement: true,})
+	// 		}
 			
-		}
+	// 	}
 
-		// need to sign in again, refreshToken needs to be renew
-		if(shouldSignIn == 0) {
-			return
-		}
+	// 	// need to sign in again, refreshToken needs to be renew
+	// 	if(shouldSignIn == 0) {
+	// 		return
+	// 	}
 
-		setTodos({
-			...todos,
-			items: filteredItems
-		})
-	}
+	// 	setTodos({
+	// 		...todos,
+	// 		items: filteredItems
+	// 	})
+	// }
 
-	async function clearList () {
+	// async function clearList () {
 
-		//TODO
-		const response = await ToolBoxSdk.api.deleteManyTasks({email: email})
+	// 	//TODO
+	// 	const response = await ToolBoxSdk.api.deleteManyTasks({email: email})
 
-		// check response status code
-		const shouldSignIn = await ToolBoxSdk.api.analyseFetchResponse(
-			response, 
-			email, 
-			history, dispatch, APP_CONTEXT)
+	// 	// check response status code
+	// 	const shouldSignIn = await ToolBoxSdk.api.analyseFetchResponse(
+	// 		response, 
+	// 		email, 
+	// 		history, dispatch, APP_CONTEXT)
 
-		if(shouldSignIn >= 1) {
+	// 	if(shouldSignIn >= 1) {
 
-			// accessToken needs to be renew and retry the fetch call
-			if(shouldSignIn == 1) {
-				response = await ToolBoxSdk.api.deleteManyTasks({email: email})
-			}
+	// 		// accessToken needs to be renew and retry the fetch call
+	// 		if(shouldSignIn == 1) {
+	// 			response = await ToolBoxSdk.api.deleteManyTasks({email: email})
+	// 		}
 			
-		}
+	// 	}
 
-		// need to sign in again, refreshToken needs to be renew
-		if(shouldSignIn == 0) {
-			return
-		}
+	// 	// need to sign in again, refreshToken needs to be renew
+	// 	if(shouldSignIn == 0) {
+	// 		return
+	// 	}
 
-		setTodos({
-			...todos,
-			items: []
-		})
+	// 	setTodos({
+	// 		...todos,
+	// 		items: []
+	// 	})
 
-	}
+	// }
 
 
 	const getAllTasks = useCallback(async () => {
@@ -223,68 +221,74 @@ export default function Todos() {
 
 	}, [])
 
-	const updatePage = p => {
-		setCurrentPage(p)
-	}
+	// const updatePage = p => {
+	// 	setCurrentPage(p)
+	// }
 
-	const firstItemOfThePage = currentPage === 1 ? 0 : countPerPage * (currentPage - 1)
+	// const firstItemOfThePage = currentPage === 1 ? 0 : countPerPage * (currentPage - 1)
 
 	if(nothingToRender) {
-		setCurrentPage(currentPage - 1)
+		// setCurrentPage(currentPage - 1)
 		setNothingToRender(false)
 	}
 
-	useEffect(() => {
+	// useEffect(() => {
 
-	},[])
-
+	// },[])
 
 
 	const spanRef = useRef()
 
-	return <>
+	return <Container mainClassName="main-container">
 
-		<div className="persistent-header">
-			<AddToDoInput todos={todos} setTodos={setTodos} />
-			<TabItems todos={todos} filteredItems={filteredItems} setFilteredItems={setFilteredItems} activeFilter={activeFilter} setActiveFilter={setActiveFilter}/>
-		</div>
+
+	<div className="persistent-header">
+		<AddToDoInput todos={todos} setTodos={setTodos} />
+		<TabItems todos={todos} filteredItems={filteredItems} setFilteredItems={setFilteredItems} activeFilter={activeFilter} setActiveFilter={setActiveFilter}/>
+	</div>
 	{
 		filteredItems.length === 0 && <TodoListEmptyState filterOption={activeFilter} />
 	}
 	
+
 	{
-		filteredItems.length > 0 && 
-			<div style={{ display: 'flex', justifyContent: 'space-between', margin: '10px 0'}}>
-				{ todos?.items.length > 0 &&	
-					<div style={{ display: 'contents'}}>
-							<button className='delete-tasks-button' onClick={() => clearList()}><TrashIcon />Delete all</button>
-							<button className='delete-tasks-button' onClick={() => handleDeleteDoneTasks()}><CheckIcon />Delete completed</button>
-							
-					</div>	
-				}
-					
-				<Pagination 
-				showTitle={false}
-				simple
-				pageSize={countPerPage}
-				onChange={updatePage}
-				current={currentPage}
-				total={filteredItems.length}
-				/>
-			</div>
+		// filteredItems.length > 0 && todos?.items.length > 0 &&
+		// 	<div style={{ display: 'flex', justifyContent: 'end'/*'space-between'*/, }}> 
 
+		// 		{/* TODO: find a way to integrate nicely these buttons  */}
+				
+				
+		// 		<div style={{ 
+		// 			display: 'contents'
+		// 		}}>
+		// 			<button className='delete-tasks-button' style={{ width: '25%', }} onClick={() => clearList()}><TrashIcon />Delete all</button>
+		// 			<button className='delete-tasks-button' style={{ width: '25%', }} onClick={() => handleDeleteDoneTasks()}><CheckIcon />Delete completed</button>
+		// 		</div>
+
+				
+
+		// 		<Pagination 
+		// 			showTitle={false}
+		// 			simple
+		// 			pageSize={countPerPage}
+		// 			onChange={updatePage}
+		// 			current={currentPage}
+		// 			total={filteredItems.length}
+		// 		/>
+
+		// 	</div>
 	}
-
 	
-	{	filteredItems?.slice(firstItemOfThePage, countPerPage*currentPage).map((item,i) => {
+	<ul className="todo-list-root">
+	{	filteredItems/*.slice(firstItemOfThePage, countPerPage*currentPage)*/?.map((item,i) => {
 
 		// WHEN you are editing some todo 
 		const editMode = editItems[item.id] || editItems[item.id] === ''
 
 		return (
-			<ul className="todo-list-root" key={i}>
+			
 				<motion.li
-					
+					key={i}
 					className="todo-list-item-root"
 					data-completed={item.achievement}
 					layout
@@ -297,8 +301,6 @@ export default function Todos() {
 					}}>
 
 					<div className="todo-list-item-primary-content">
-
-						
 						<input
 							type="checkbox"
 							checked={item.achievement}
@@ -321,7 +323,6 @@ export default function Todos() {
 								/> : <span>{item.task}</span>
 							}
 
-							{/* {console.log(spanWidth, spanRef?.current?.offsetWidth)} */}
 						</label>
 					</div>
 					<TodoListItemActionButtons 
@@ -335,11 +336,11 @@ export default function Todos() {
 						// setSpanWidth={setSpanWidth}
 						spanRef={spanRef?.current?.offsetWidth}
 					/>
-				</motion.li></ul>)}
+				</motion.li>)}
 				
 			)
 		}
-	
-	
-	</>
+		</ul>
+
+	</Container>
 }

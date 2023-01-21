@@ -14,7 +14,7 @@ import { AuthContext } from "../../utils/contexts/authenticationContext"
 import { APP_CONTEXT, } from "../../utils/reducers/authenticationReducer"
 // == SDK
 import ToolBoxSdk from "../sdk/toolBox-sdk-js"
-import classNames from "classnames"
+import Container from "../layout/containers"
 
 export default function SignIn() {
 
@@ -62,6 +62,8 @@ export default function SignIn() {
 	}
 
 	return(
+
+		<Container>
 		<form className="landing-sign-in-up-container" onSubmit={(e) => handleSubmit	(e) }>
 
 
@@ -76,8 +78,8 @@ export default function SignIn() {
 						placeholder="e.g. alex@example.com" 
 						onChange={handleChange}
 					/>
-					{ !isEmailAddressValid && credential.email.length !== 0 && <i className="fa fa-times" aria-hidden="true"></i>}
-					{ isEmailAddressValid && credential.email.length !== 0 && <i className="fa fa-check" aria-hidden="true"></i>}
+					{ !isEmailAddressValid && credential.email.length !== 0 && <i className="input-icon fa fa-times" aria-hidden="true"></i>}
+					{ isEmailAddressValid && credential.email.length !== 0 && <i className="input-icon fa fa-check" aria-hidden="true"></i>}
 
 				</div>
 				<label className="sign-in-up-label-input">Password</label>
@@ -98,5 +100,7 @@ export default function SignIn() {
 		</div>
 	
 		</form>
+
+		</Container>
 	)
 }

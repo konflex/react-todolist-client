@@ -12,6 +12,8 @@ import { useHistory } from "react-router-dom"
 // == SDK
 import ToolBoxSdk from '../sdk/toolBox-sdk-js'
 
+import Container from "../layout/containers"
+
 export default function SignUp() {
 
 	const history = useHistory()
@@ -58,6 +60,9 @@ export default function SignUp() {
 	}
 
 	return(
+
+		<Container>
+
 		<form className="landing-sign-in-up-container" onSubmit={(e) => handleSubmit(e) }>
 			<div className="sign-in-up-input-container"> 
 			<h2 style={{ margin: 0 }}>Sign up</h2>
@@ -71,8 +76,8 @@ export default function SignUp() {
 						placeholder="e.g. alex@example.com" 
 						onChange={handleChange}
 					/>
-					{ !isEmailAddressValid  && credential.email.length !== 0 && <i className="fa fa-times" aria-hidden="true"></i>}
-					{ isEmailAddressValid  && credential.email.length !== 0 && <i className="fa fa-check" aria-hidden="true"></i>}
+					{ !isEmailAddressValid  && credential.email.length !== 0 && <i className="input-icon fa fa-times" aria-hidden="true"></i>}
+					{ isEmailAddressValid  && credential.email.length !== 0 && <i className="input-icon fa fa-check" aria-hidden="true"></i>}
 
 				</div>
 
@@ -95,8 +100,8 @@ export default function SignUp() {
 						placeholder="Confirm password" 
 						onChange={handleChange}
 					/>
-					{ !arePasswordsIdentical && (credential.password.length && credential.confirmedPassword.length) !== 0 && <i className="fa fa-times" aria-hidden="true"></i>}
-					{ arePasswordsIdentical && (credential.password.length && credential.confirmedPassword.length) !== 0 && <i className="fa fa-check" aria-hidden="true"></i>}
+					{ !arePasswordsIdentical && (credential.password.length && credential.confirmedPassword.length) !== 0 && <i className="input-icon fa fa-times" aria-hidden="true"></i>}
+					{ arePasswordsIdentical && (credential.password.length && credential.confirmedPassword.length) !== 0 && <i className="input-icon  fa fa-check" aria-hidden="true"></i>}
 
 				</div>
 
@@ -107,5 +112,7 @@ export default function SignUp() {
 
 			</div>
 		</form>
+
+		</Container>
 	)
 }	

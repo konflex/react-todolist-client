@@ -4,13 +4,19 @@
  * @module Client
  */
 
-import React from "react"
+import React, { useState, useEffect } from "react"
 import ErrorOccured from "./errorOccured"
 
 
 // Api header depending of the env variable 
 const ApiHeader =  process.env.RUN_PRODUCTION_SERVER == 'true' ? process.env.API_HEADER_PRODUCTION : process.env.API_HEADER_DEVELOPMENT 
 
+
+function getWindowDimensions() {
+	const { innerWidth: width, innerHeight: height, } = window
+
+	return { width, height, }
+}
 
 let ToolBoxSdk = {
 
@@ -45,9 +51,25 @@ let ToolBoxSdk = {
 	arePasswordsIdentical(password, confirmPassword) {
 		return password === confirmPassword 
 	},
-	// TODO: change this value with the size of the screen
-	countPerPage: 5
 
+	countPerPage: 5,
+	
+	useWindowDimensions() {
+		const [windowDimensions, setWindowDimensions] = useState(getWindowDimensions())
+	  
+		useEffect(() => {
+		  function handleResize() {
+			setWindowDimensions(getWindowDimensions())
+		}
+	
+			window.addEventListener('resize', handleResize)
+	
+			return () => window.removeEventListener('resize', handleResize)
+	
+		}, [])
+	
+		return windowDimensions;
+	}
 }
 
 
@@ -380,7 +402,6 @@ export class ErrorBoundary extends React.Component {
 		return this.props.children;
 	}
 }
-
 
 
 ToolBoxSdk.api = new API()
