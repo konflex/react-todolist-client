@@ -11,7 +11,7 @@ import React, { useState, useEffect, useContext, useCallback, useRef, } from "re
 import { useHistory } from "react-router-dom"
 // == UUID
 import { v1 as uuid } from 'uuid'
-// == SDK
+// == SDK 
 import ToolBoxSdk from '../sdk/toolBox-sdk-js'
 // == AuthContext 
 import { AuthContext } from '../../utils/contexts/authenticationContext'
@@ -64,8 +64,6 @@ export default function Todos() {
 	const [filteredItems, setFilteredItems] = useState([])
 	// The active filter can be: All, pending or completed tasks
 	const [activeFilter, setActiveFilter] = useState(FILTER_STATE.all)
-	// nothingToRender on the page
-	const [nothingToRender, setNothingToRender] = useState(false)
 
 	async function handleDoneTask (e) {
 
@@ -178,6 +176,7 @@ export default function Todos() {
 
 
 	const getAllTasks = useCallback(async () => {
+
 		let response = await ToolBoxSdk.api.getAllTasks(email)
 
 		if(response.responseStatusCode === 200) {
@@ -195,6 +194,7 @@ export default function Todos() {
 				})
 			}
 
+			
 			setTodos({...todos, items: todosItems})
 		} 
 		else {
@@ -227,26 +227,22 @@ export default function Todos() {
 
 	// const firstItemOfThePage = currentPage === 1 ? 0 : countPerPage * (currentPage - 1)
 
-	if(nothingToRender) {
-		// setCurrentPage(currentPage - 1)
-		setNothingToRender(false)
-	}
-
-	// useEffect(() => {
-
-	// },[])
-
-
 	const spanRef = useRef()
+
 
 	return <Container mainClassName="main-container">
 
-
 	<div className="persistent-header">
 		<AddToDoInput todos={todos} setTodos={setTodos} />
-		<TabItems todos={todos} filteredItems={filteredItems} setFilteredItems={setFilteredItems} activeFilter={activeFilter} setActiveFilter={setActiveFilter}/>
+		<TabItems 
+			todos={todos} 
+			filteredItems={filteredItems} 
+			setFilteredItems={setFilteredItems} 
+			activeFilter={activeFilter} 
+			setActiveFilter={setActiveFilter}
+		/>
 	</div>
-	{
+	{		
 		filteredItems.length === 0 && <TodoListEmptyState filterOption={activeFilter} />
 	}
 	
@@ -297,9 +293,9 @@ export default function Todos() {
 						transition: {
 						duration: 0.3,
 						ease: 'easeOut',
-						}
-					}}>
-
+						}}
+					}
+					>
 					<div className="todo-list-item-primary-content">
 						<input
 							type="checkbox"
@@ -332,7 +328,6 @@ export default function Todos() {
 						analyseFetchResponseParams={{email, dispatch, APP_CONTEXT, history}}
 						editItems={editItems} 
 						setEditItems={setEditItems}
-						setNothingToRender={setNothingToRender}
 						// setSpanWidth={setSpanWidth}
 						spanRef={spanRef?.current?.offsetWidth}
 					/>

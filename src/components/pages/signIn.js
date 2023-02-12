@@ -19,7 +19,7 @@ import Container from "../layout/containers"
 export default function SignIn() {
 
 	const history = useHistory()
-
+	
 	const { state, dispatch } = useContext(AuthContext)
 
 	const [credential, setCredential] = useState({ email: '', password: '', })
@@ -54,13 +54,13 @@ export default function SignIn() {
 				username: response.json.username,
 			})
 
-			// history.push('/tasks')
+			history.push('/tasks')
 		}
-		if(response.json && response.responseStatusCode === 401) {
+		if(response.json && response.responseStatusCode !== 200) {
 			setError(response.json.message)
-		} 	
+		}
 	}
-
+ 
 	return(
 
 		<Container>
@@ -94,7 +94,7 @@ export default function SignIn() {
 			</button>
 	
 			<a href="/signup" style={{ color: "white" }}>No account yet ?</a>
-		
+			<a href="/sendpasswordlink" style={{ color: "white" }}>Forgot password ?</a>
 			{ error.length !== 0 && <p className="input-error" style={{ textAlign: 'center'}}>{error}</p>}
 
 		</div>

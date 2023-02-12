@@ -181,6 +181,48 @@ class API extends CoreSDK {
 	}
 
 	/**
+	 * @summary To send a link to reset password
+	 * 
+	 * @param {String} email The email address of the user
+	 * @returns The fetch promise
+	 * @throws 401 error whenever the user is unknown
+	*/
+	sendResetPasswordLink(email) {
+		return this.apiCall(`${ApiHeader}/api/resetpassword`, {
+			params: {
+				method: 'POST',
+				credentials: 'include',
+				headers: this.headers(),
+				body: JSON.stringify({
+					email: email,
+				}),
+			}})
+	}
+
+	/**
+	 * @summary Reset password
+	 * 
+	 * @param {String} token to reset password
+	 * @param {String} password 
+	 * @returns The fetch promise
+	 * @throws 500 error when error
+	*/
+	resetPassword(token,password) {
+
+		console.log(token, password)
+
+		return this.apiCall(`${ApiHeader}/api/resetpassword/${token}`, {
+			params: {
+				method: 'PUT',
+				credentials: 'include',
+				headers: this.headers(),
+				body: JSON.stringify({
+					password: password
+				}),
+			}})
+	}
+
+	/**
 	 * @summary Sign the user up
 	 * @param {String} username The username of the user to sign up
 	 * @param {String} email The email address of the user to sign up
@@ -197,6 +239,42 @@ class API extends CoreSDK {
 				body: JSON.stringify({
 					email: email,
 					password: password,
+				}),
+			}})
+	}
+
+	/**
+	 * @summary Confirm email validity 
+	 * 
+	 * @param {String} token Value used to confirm user's email
+	 * @returns The fetch promise
+	 * @throws 500 error code
+	*/
+	confirmEmail(token) {
+		console.log(`${ApiHeader}/api/verify/${token}`)
+		return this.apiCall(`${ApiHeader}/api/verify/${token}`, {
+			params: {
+				method: 'GET',
+				credentials: 'include',
+				headers: this.headers(),
+			}})
+	}
+
+	/**
+	 * @summary Resend confirm email link to verify user's email 
+	 * 
+	 * @param {String} email Value used to find user in db and resend email
+	 * @returns The fetch promise
+	 * @throws 500 error code
+	*/
+	resendLink(email) {
+		return this.apiCall(`${ApiHeader}/api/verify/resendlink`, {
+			params: {
+				method: 'POST',
+				credentials: 'include',
+				headers: this.headers(),
+				body: JSON.stringify({
+					email: email,
 				}),
 			}})
 	}

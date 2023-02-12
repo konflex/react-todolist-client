@@ -12,14 +12,12 @@ import React from "react"
  * based on viewport width
  */
 export default function Container({ children, className= '', mainClassName = '', }) {	
+
 	return (
-		<div className={[mainClassName, ''].join(' ')}>
-			<div className={[className, 'container'].join(' ')}>
+		<div className={mainClassName !== '' ? [mainClassName, ''].join(' ') : ''}>
+			<div className={className !== '' ? ['container', className].join(' ') : 'container'}>
 				{children}
 			</div>
-
-
-
 		</div>
 	)
 }

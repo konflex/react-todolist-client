@@ -38,6 +38,11 @@ $button-padding-size: 0.3em;
 html, body {
 	height: 100%;
 	margin:0;
+	letter-spacing: .1rem;
+}
+
+input {
+	letter-spacing: .2rem;
 }
 
 body {
@@ -46,6 +51,8 @@ body {
   font-family: 'Space Mono', 'Segoe UI', 'Ubuntu', 'Source Sans Pro', 'monospace';
   box-sizing: border-box;
 }
+
+
 
 #app {
 	height: 100%;
@@ -65,7 +72,8 @@ body {
 .persistent-header {
   position: -webkit-sticky;
   position: sticky;
-  top: 0;
+  // top: 0;
+  top: 115px; // same as .main-container
   left: 0;
   background-color: $color-bg;
   display: flex;
@@ -133,7 +141,7 @@ div.styles-input:focus-within {
 .container {
   padding-left: 2em;
   padding-right: 2em;
-  max-width: 740px;
+  max-width: 666px;
   margin-left: auto;
   margin-right: auto;
 //   height: 100%;
@@ -143,7 +151,7 @@ div.styles-input:focus-within {
 header.appbar-root {
   border-bottom: 2px solid $tab-item-list-black;
   background-color: $color-bg;
-  position: absolute;
+  position: fixed;
   width: 100%;
   top: 0;
   z-index: 1200;
@@ -523,12 +531,16 @@ input[type=checkbox]:active {
 
 // Footer
 .footer {
-	position: absolute;
+	position: fixed;
 	text-align: center;
 	display: flex;
 	justify-content: center;
-	bottom: 5px;
+	bottom: 0;
 	width: 100%;
+	align-items: center;
+	height: 3em;
+	background-color: $color-accent;
+	z-index: 10;
 }
 
 
@@ -637,10 +649,9 @@ input[type=checkbox]:active {
 	color: $color-error;
 }
 
-.fa-check {
+.fa-check, .success-message {
 	color: $edit-todo-green;
 }
-
 
 
 // media quieries
@@ -653,6 +664,14 @@ input[type=checkbox]:active {
 
 	.appbar-container {
 		display: flex;
+	}
+
+	html, body {
+		letter-spacing: 0rem;
+	}
+	
+	input {
+		letter-spacing: 0rem;
 	}
  }
 

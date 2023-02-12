@@ -9,10 +9,9 @@ import React, { Suspense, useState, useEffect, } from "react"
 import { AuthContextProvider } from './utils/contexts/authenticationContext'
 import {BrowserRouter, useHistory, } from 'react-router-dom'
 import Header from './components/layout/header'
-import Container from './components/layout/containers'
 import { ErrorBoundary, } from "./components/sdk/toolBox-sdk-js"
 import Navigation from './components/routes/navigation'
-// import {FaGithub} from 'react-icons/fa'
+import {FaGithub} from 'react-icons/fa'
 
 class DebugRouter extends BrowserRouter {
 	constructor(props) {
@@ -77,9 +76,17 @@ function Layout() {
 				<Navigation />
 			</ErrorBoundary>
 
-			{/* 
-			<div className="footer">
-				<a href='https://github.com/konflex' target='_blank' rel="noopener noreferrer"><FaGithub className='github'/></a>
+			
+			{/* <div className="footer">
+				<a 	href='https://github.com/konflex' 
+					target='_blank' 
+					rel="noopener noreferrer"
+					style={{
+						height: '100%',
+						display: 'flex',
+						alignItems: 'center',
+					}}
+					><FaGithub className='github'/></a>
 			</div> */}
 
 		</>

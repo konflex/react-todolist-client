@@ -16,7 +16,7 @@ const countPerPage = ToolBoxSdk.countPerPage
 /**
  * @param {Object} itemToDelete Contains the id of the item to delete
  */
-async function handleDelete({itemToModify, todos, setTodos, analyseFetchResponseParams, setNothingToRender}) {
+async function handleDelete({itemToModify, todos, setTodos, analyseFetchResponseParams}) {
 
   const { email, dispatch, APP_CONTEXT, history, } = analyseFetchResponseParams
   // the id of the item to delete
@@ -54,13 +54,6 @@ async function handleDelete({itemToModify, todos, setTodos, analyseFetchResponse
       items: filteredItems
     })
 
-    // Check if filteredItems is empty and it can be divide by 7 (max elements per page)
-    // These conditions mean there are no elements to render and we must go to previous page
-    if(filteredItems.length > 0 &&
-       filteredItems.length % countPerPage === 0) {
-        setNothingToRender(true)
-    }
-
   }
 }
 
@@ -75,8 +68,6 @@ async function handleEdit({ itemToModify, todos, setTodos, analyseFetchResponseP
 
   const {id, task, achievement} = itemToModify
 
-
-  console.log(spanRef)
   if(editItems[id]) {
 
     let updateTask = await ToolBoxSdk.api.updateTask(id, editItems[id], achievement)
@@ -188,7 +179,6 @@ function TodoListItemActionButtons(props) {
       analyseFetchResponseParams={props.analyseFetchResponseParams}
       editItems={props.editItems}
       setEditItems={props.setEditItems}
-      setNothingToRender={props.setNothingToRender}
       setSpanWidth={props.setSpanWidth}
       spanRef={props.spanRef}
     />

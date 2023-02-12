@@ -21,6 +21,7 @@ export default function SignUp() {
 	const [credential, setCredential] = useState({ email: '', password: '', confirmedPassword: '' })
 
 	const [ errorMessage, setErrorMessage] = useState('')
+	const [ successMessage, setSuccessMessage] = useState('')
 
 	const handleChange = (e) => {
 		setCredential({ ...credential,[e.target.name]: e.target.value })
@@ -52,17 +53,15 @@ export default function SignUp() {
 
 		if(response.json && response.responseStatusCode === 200) {
 			setErrorMessage('')
-			alert('Account created')
+			setSuccessMessage(response.message)
 			setCredential({email: '', password: '', confirmedPassword: '' })
-			history.push('/signin')
+			// history.push('/signin')
 		}
 
 	}
 
 	return(
-
 		<Container>
-
 		<form className="landing-sign-in-up-container" onSubmit={(e) => handleSubmit(e) }>
 			<div className="sign-in-up-input-container"> 
 			<h2 style={{ margin: 0 }}>Sign up</h2>
@@ -109,10 +108,10 @@ export default function SignUp() {
 				
 				<a href="/signin" style={{ color: "white" }}>Already have an account ?</a>
 				{ errorMessage && <p className="input-error" style={{ textAlign: 'center', }}>{errorMessage} </p> }
+				{ successMessage && <p className="success-message" style={{ textAlign: 'center', }}>{successMessage} </p> }
 
 			</div>
 		</form>
-
 		</Container>
 	)
 }	

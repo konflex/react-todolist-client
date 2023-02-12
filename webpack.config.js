@@ -12,42 +12,25 @@ const webpack = require("webpack")
 require('dotenv').config()
 const fs = require('fs')
 
-const htmlPlugin = new HtmlWebPackPlugin({
-	template: './src/index.html',
-	filename: './index.html',
-	hash: true,
-})
-
-const serverOptions = process.env.NODE_ENV == "development" && process.env.RUN_PRODUCTION_SERVER == "true" ? 
-{
-	type: 'https',
-	options: {
-		key:  fs.readFileSync('./todo.key'),
-		cert: fs.readFileSync('./todo.crt')
-	},
-} : {}
 
 module.exports = env => { 
 
-	const devServer = {
+	const entry = "./src/index.js"
 
-		server: serverOptions,
+	const devServer = {
 		host: process.env.NODE_ENV == "development" && 
 			  process.env.RUN_PRODUCTION_SERVER == "true" ? process.env.HOST : 'localhost',
 		port: 8080,
 
+		// display error in browser
 		client: {
 			overlay: false,
 		},
-		
-		historyApiFallback: {
-			disableDotRule:true,
-			open: true,
-			hot: false,
-			inline: false,
-		}
+
+		historyApiFallback: true,
 
 	}
+
 
 	const devtool = 'inline-source-map'
 
@@ -78,7 +61,6 @@ module.exports = env => {
 					  loader: 'sass-loader',
 					  options: {
 						sourceMap: true,
-						// options...
 					  }
 					}
 				]
@@ -86,8 +68,13 @@ module.exports = env => {
 		]
 	}
 
+
 	const plugins = [
-		htmlPlugin, 
+		new HtmlWebPackPlugin({
+			template: 'src/index.html',
+			filename: 'index.html',
+			hash: true,
+		}), 
 		new webpack.EnvironmentPlugin([
 			'RUN_PRODUCTION_SERVER', 
 			'API_HEADER_DEVELOPMENT', 
@@ -98,13 +85,20 @@ module.exports = env => {
 		  }),
 	]
 
+
 	const conf = {
+		entry,
 		devtool,
 		devServer,
 		mode,
 		module: _module,
 		plugins,
 		cache:false,
+		output: {
+			filename: "main.js",
+			path: path.resolve(__dirname, "dist"),
+			publicPath: "/",
+		},
 	}
 
 	return conf

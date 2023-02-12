@@ -31,7 +31,7 @@ function TodoListEmptyState({ filterOption }) {
         scale: [1.2, 0.98, 1],
         opacity: [0, 1],
         transition: {
-          duration: 0.5,
+          duration: 0.3,
           type: 'spring',
           bounce: 1,
         }
