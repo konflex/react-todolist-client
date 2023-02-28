@@ -61,7 +61,7 @@ export default function SignUp() {
 	}
 
 	return(
-		<Container>
+		<Container className="sign-in-up">
 		<form className="landing-sign-in-up-container" onSubmit={(e) => handleSubmit(e) }>
 			<div className="sign-in-up-input-container"> 
 			<h2 style={{ margin: 0 }}>Sign up</h2>

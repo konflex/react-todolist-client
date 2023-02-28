@@ -49,7 +49,7 @@ function ResendLink() {
 	}
 
 	return (
-	<Container>
+	<Container className="sign-in-up">
 
 		<form className="landing-sign-in-up-container" onSubmit={(e) => handleSubmit(e) }>
 

@@ -53,7 +53,7 @@ function ResetPassword() {
 	}
 
 	return (
-	<Container>
+	<Container className="sign-in-up">
 
 		<form className="landing-sign-in-up-container" onSubmit={(e) => handleSubmit(e) }>
 

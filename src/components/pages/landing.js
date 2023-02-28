@@ -10,7 +10,7 @@ import Container from '../layout/containers'
 const Landing = () => {
 	return(
 
-		<Container>
+		<Container className="sign-in-up">
 			<div className="landing-sign-in-up-container">
 				<h1 className="" style={{ margin: 0, }}>Welcome to the konflex TODO app 🤖</h1>
 				<p className="">Yet another place where you can store tasks you have to do. To start you need to log in or create an account if you havn't one already.</p>

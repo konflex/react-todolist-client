@@ -11,13 +11,13 @@ import React from "react"
  * Constrains and horizontally centers content
  * based on viewport width
  */
-export default function Container({ children, className= '', mainClassName = '', }) {	
+export default function Container({ children, className= '', }) {	
 
 	return (
-		<div className={mainClassName !== '' ? [mainClassName, ''].join(' ') : ''}>
+		<main className="main-container">
 			<div className={className !== '' ? ['container', className].join(' ') : 'container'}>
 				{children}
 			</div>
-		</div>
+		</main>
 	)
 }

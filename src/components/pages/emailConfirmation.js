@@ -41,7 +41,7 @@ function EmailConfirmation() {
 	}, [])
 
 	return (
-	<Container>
+	<Container className="sign-in-up">
 		{ message.length !== 0 && <>
 			<p className={responseStatus == 200 ? "success-message" : "input-error"} style={{ textAlign: "center", }}>{message}</p> 
 			{ responseStatus == 200 && <p style={{ textAlign: "center", }}><a href="/signin" style={{ color: "white" }}>Sign in</a></p> }

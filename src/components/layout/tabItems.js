@@ -19,7 +19,7 @@ const FILTER_STATE = ToolBoxSdk.api.FILTER_STATE
  * @param {function} setTodos To set user's tasks 
  * @param {object} todos User's tasks as object
  */
-export default function TabItems({ todos, setFilteredItems, activeFilter, setActiveFilter, }) {
+export default function TabItems({ todos, setFilteredItems, activeFilter, setActiveFilter, isEmpty, setIsEmpty}) {
 
 	const { width } = ToolBoxSdk.useWindowDimensions();
 
@@ -69,6 +69,10 @@ export default function TabItems({ todos, setFilteredItems, activeFilter, setAct
 
         setFilteredItems(filteredTodoList)
 
+		if((todos.items.length == 0 || filteredTodoList.length == 0 ) && isEmpty == false) {
+			setIsEmpty(true)
+		}
+
     }, [todos,activeFilter])
 	
     return(
@@ -83,7 +87,7 @@ export default function TabItems({ todos, setFilteredItems, activeFilter, setAct
                         aria-label={ariaLabel}
                     >
                         { LeadingIcon }
-                        { width > 440 && label }
+                        { width > 470 && label }
                     </button>
                 </li>)
                 )

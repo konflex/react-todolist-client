@@ -44,9 +44,7 @@ export default function Todos() {
 
 	// user email
 	const email = state.email
-	// username 
-	const username = state.username
-	// 
+
 	const [editItems, setEditItems] = useState({})
 
 	// enum to handle when user need to sign in again
@@ -64,6 +62,8 @@ export default function Todos() {
 	const [filteredItems, setFilteredItems] = useState([])
 	// The active filter can be: All, pending or completed tasks
 	const [activeFilter, setActiveFilter] = useState(FILTER_STATE.all)
+
+	const [ isEmpty, setIsEmpty ] = useState(undefined)
 
 	async function handleDoneTask (e) {
 
@@ -177,6 +177,7 @@ export default function Todos() {
 
 	const getAllTasks = useCallback(async () => {
 
+
 		let response = await ToolBoxSdk.api.getAllTasks(email)
 
 		if(response.responseStatusCode === 200) {
@@ -194,17 +195,29 @@ export default function Todos() {
 				})
 			}
 
-			
 			setTodos({...todos, items: todosItems})
+
 		} 
+
 		else {
+
 			let shouldSignIn = await ToolBoxSdk.api.analyseFetchResponse(response, email, history, dispatch, APP_CONTEXT)
 			setShouldSignIn(shouldSignIn)
+
 		}
-		
+
+		if(response.responseStatusCode && response.json.length == 0) {	
+			setIsEmpty(true)
+		}
+		else {
+			setIsEmpty(false)
+		}
+
 	},[])
 
+
 	useEffect(() => {
+
 		getAllTasks()
 
 		if(shouldSignIn >= 1) {
@@ -229,8 +242,7 @@ export default function Todos() {
 
 	const spanRef = useRef()
 
-
-	return <Container mainClassName="main-container">
+	return <Container>
 
 	<div className="persistent-header">
 		<AddToDoInput todos={todos} setTodos={setTodos} />
@@ -240,12 +252,13 @@ export default function Todos() {
 			setFilteredItems={setFilteredItems} 
 			activeFilter={activeFilter} 
 			setActiveFilter={setActiveFilter}
+			isEmpty={isEmpty}
+			setIsEmpty={setIsEmpty}
 		/>
 	</div>
 	{		
-		filteredItems.length === 0 && <TodoListEmptyState filterOption={activeFilter} />
+		isEmpty && filteredItems.length === 0 && <TodoListEmptyState filterOption={activeFilter} />
 	}
-	
 
 	{
 		// filteredItems.length > 0 && todos?.items.length > 0 &&
