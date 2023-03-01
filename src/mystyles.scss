@@ -681,11 +681,19 @@ input[type=checkbox]:active {
 	input {
 		letter-spacing: 0rem;
 	}
- }
+}
 
+@media (max-width: 400px) { 
 
+	.add-todo-box-input {
+		font-size: 14px;
+	}
 
-
+	.large-button {
+		height: 3em;
+		width: 3em;
+	}
+}
 
 
 // /// PAGER
