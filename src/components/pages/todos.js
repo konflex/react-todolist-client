@@ -292,19 +292,19 @@ export default function Todos() {
 	{	filteredItems/*.slice(firstItemOfThePage, countPerPage*currentPage)*/?.map((item,i) => {
 
 		// WHEN you are editing some todo 
-		const editMode = editItems[item.id] || editItems[item.id] === ''
+		const editMode = typeof editItems[item.id] === "string"
 
 		return (
 			
 				<motion.li
 					key={i}
-					className="todo-list-item-root"
+					className={editMode ? 'todo-list-item-root edit-mode-active': 'todo-list-item-root'}
 					data-completed={item.achievement}
 					layout
 					animate={{
 						y: [30, 0],
 						transition: {
-						duration: 0.3,
+						duration: 0.5,
 						ease: 'easeOut',
 						}}
 					}
@@ -324,9 +324,9 @@ export default function Todos() {
 						{ editMode ? 
 							<input
 								className="edit-todo-box-input" 
-								style={{ paddingLeft: 0}}
+								style={{ paddingLeft: 0, }}
 								type="text" 
-								value={editItems[item.id]}  
+								value={editItems[item.id]}  	
 								onChange={(e) => {setEditItems({...editItems, [item.id]: e.target.value}); }}
 								
 								/> : <span>{item.task}</span>
@@ -343,6 +343,7 @@ export default function Todos() {
 						setEditItems={setEditItems}
 						// setSpanWidth={setSpanWidth}
 						spanRef={spanRef?.current?.offsetWidth}
+						editMode={editMode}
 					/>
 				</motion.li>)}
 				

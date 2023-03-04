@@ -42,7 +42,7 @@ html, body {
 }
 
 input {
-	letter-spacing: .2rem;
+	letter-spacing: .1rem;
 }
 
 body {
@@ -415,7 +415,12 @@ header.appbar-root {
   gap: 0.5em;
   border-radius: 0.5em;
 }
-  
+
+.edit-mode-active {
+	border: 1px solid $color-accent;
+	background-color: #2279db26;
+}
+
 .todo-list-item-primary-content {
   display: flex;
   flex-direction: row;
@@ -511,6 +516,10 @@ input[type=checkbox]:active {
 .todo-list-item-button:hover {
   opacity: 0.9;
   background-color: $color-accent; 
+}
+
+.button-edit-mode {
+	background-color: $color-accent; 
 }
 
 // todoListEmptyState style
@@ -692,6 +701,10 @@ input[type=checkbox]:active {
 	.large-button {
 		height: 3em;
 		width: 3em;
+	}
+
+	.edit-todo-box-input {
+		max-width: 150px;
 	}
 }
 

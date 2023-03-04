@@ -151,12 +151,14 @@ const todoListItemActions = [
  */
 function TodoListItemActionButton(props) {
 
-  return (
+	return (
     <button
-      className="todo-list-item-button"
+      className={props.editMode == true && props.title == "Edit Item" ? ['todo-list-item-button', "button-edit-mode"].join(' ') : 'todo-list-item-button'}
       type="button"
       title={props.title}
-      onClick={() => props.onClick(props)}
+      onClick={() => {
+		props.onClick(props)
+	  }}
     >
       { props.icon }
     </button>
@@ -181,6 +183,7 @@ function TodoListItemActionButtons(props) {
       setEditItems={props.setEditItems}
       setSpanWidth={props.setSpanWidth}
       spanRef={props.spanRef}
+	  editMode={props.editMode}
     />
     ))}
   </div>
