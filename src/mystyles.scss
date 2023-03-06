@@ -66,6 +66,7 @@ body {
 	position: relative;
 	margin-top: 1rem;
 	height: 100%;
+	margin-bottom: 1rem;
 	// width: 100%;
 	// top: 115px;
 	// min-height: -webkit-fill-available;
@@ -265,6 +266,7 @@ header.appbar-root {
   border: none;
   font: inherit;
   caret-color: $color-accent;
+  width: 100%;
 }
 
 .add-todo-box-input::placeholder {
@@ -426,6 +428,7 @@ header.appbar-root {
   flex-direction: row;
   align-items: center;
   gap: 1em;
+  width: 100%;
 }
 
   
@@ -458,6 +461,7 @@ input[type=checkbox]:active {
   overflow-wrap: break-word;
   transition: all 250ms ease;
   position: relative;
+  width: 100%;
 }
  
 .todo-list-item-label::before {
