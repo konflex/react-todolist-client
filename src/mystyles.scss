@@ -516,11 +516,6 @@ input[type=checkbox]:active {
   transform: scale(1.1);
   box-shadow: 0 0 0 3px $placeholder-color;
 }
-  
-.todo-list-item-button:hover {
-  opacity: 0.9;
-  background-color: $color-accent; 
-}
 
 .button-edit-mode {
 	background-color: $color-accent; 
@@ -590,17 +585,6 @@ input[type=checkbox]:active {
 	font-size: 1em;
 
 }
-
-.delete-tasks-button:hover {
-  // color: #32DE8A;
-  // color: #136F63;
-  color: #F03A47;
-  cursor: pointer;
-  border:1px solid #F03A47;
-  outline: none;
-  border-radius: 0.3em;
-}
-
 
 //<button className="stackoverflow-button" role="button">Button 7</button>
 
@@ -729,6 +713,24 @@ input[type=checkbox]:active {
 	}
 }
 
+
+@media (hover: hover) and (pointer: fine) {
+
+	.todo-list-item-button:hover {
+		opacity: 0.9;
+		background-color: $color-accent; 
+	}
+
+	.delete-tasks-button:hover {
+		// color: #32DE8A;
+		// color: #136F63;
+		color: #F03A47;
+		cursor: pointer;
+		border:1px solid #F03A47;
+		outline: none;
+		border-radius: 0.3em;
+	}
+}
 
 // /// PAGER
 // $rc-pagination-arrow-font-size: 22px;
