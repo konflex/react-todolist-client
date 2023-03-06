@@ -670,6 +670,13 @@ input[type=checkbox]:active {
 	color: $edit-todo-green;
 }
 
+.not-found {
+	font-size: "10rem"
+}
+
+.not-found-container {
+	height: auto;
+}
 
 // media quieries
 @media (max-width: 640px) /*, screen and (orientation: portrait) */{ 
@@ -689,6 +696,10 @@ input[type=checkbox]:active {
 	
 	input {
 		letter-spacing: 0rem;
+	}
+
+	.not-found {
+		margin: 0;
 	}
 }
 
