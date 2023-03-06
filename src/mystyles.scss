@@ -706,6 +706,12 @@ input[type=checkbox]:active {
 		margin: 0;
 	}
 }
+// media quieries
+@media (max-height: 640px) { 
+	.not-found {
+		font-size: 8rem;
+	}
+}
 
 @media (max-width: 400px) { 
 
